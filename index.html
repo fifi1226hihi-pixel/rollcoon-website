@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>洛睏的秘密檔案</title>
+    <title>洛睏的祕密檔案</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
     
     <style>
-
-        /* --- 全域設定 --- */
+        /* =========================================
+           1. 全域與基礎設定
+           ========================================= */
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
         body {
@@ -21,19 +22,18 @@
             justify-content: center;
             min-height: 100vh;
             overflow-x: hidden;
-            /* 禁止選取文字，讓體驗像 App */
             user-select: none; 
+            /* ★ 強制往下推 70px，避免被頁首擋住 */
+            padding-top: 70px !important;
         }
 
         /* --- 手機版面模擬容器 --- */
         #app-container {
             width: 100%;
             max-width: 480px;
-       background-image: 
-        linear-gradient(rgba(15, 16, 37, 0.8), rgba(15, 16, 37, 0.8)),
-        url('bg.png');
-           background-size: cover;
-           background-position: center;
+            background-image: linear-gradient(rgba(15, 16, 37, 0.8), rgba(15, 16, 37, 0.8)), url('bg.png');
+            background-size: cover;
+            background-position: center;
             min-height: 100vh;
             position: relative;
             box-shadow: 0 0 50px rgba(0,0,0,0.5);
@@ -41,377 +41,244 @@
             padding-bottom: 80px;
         }
 
+        /* =========================================
+           2. 懸浮頁首 (Header)
+           ========================================= */
+        .rc-header {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 60px;
+            background: #d6c8b3; border-bottom: 1px solid #c0b29e;
+            z-index: 2147483647; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .rc-header-container {
+            width: 100%; max-width: 1200px; padding: 0 15px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .rc-logo img { height: 40px; width: auto; vertical-align: middle; }
+        
+        .rc-right-area { display: flex; align-items: center; gap: 10px; }
+        .rc-email-text {
+            font-size: 14px; color: #555; text-decoration: none; font-weight: 500;
+            display: none; /* 手機隱藏 */
+        }
+        .rc-btn {
+            background-color: #194366; color: #d6c8b3 !important;
+            padding: 6px 12px; border-radius: 4px; font-size: 13px; font-weight: bold;
+            text-decoration: none; white-space: nowrap;
+        }
+        @media (min-width: 768px) {
+            .rc-header { height: 70px; }
+            .rc-email-text { display: block; margin-right: 15px; }
+            .rc-btn { padding: 8px 16px; font-size: 14px; }
+        }
 
-        /* --- 視覺工具類 --- */
+        /* =========================================
+           3. 封面與特效
+           ========================================= */
+        #landing-screen {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 99999;
+            background: linear-gradient(rgba(25, 67, 102, 0.9), rgba(25, 67, 102, 0.9)), url('bg.png');
+            background-size: cover; background-position: center; background-repeat: no-repeat;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease; cursor: pointer;
+        }
+        #landing-screen.hidden { opacity: 0; pointer-events: none; visibility: hidden; }
+        
+        .book-container {
+            animation: float 3s ease-in-out infinite; border: 4px solid #4a3b32;
+            border-radius: 12px; overflow: hidden; box-shadow: 0 0 30px rgba(251, 191, 36, 0.2);
+            margin-bottom: 20px;
+        }
+
+        /* =========================================
+           4. 主圖 (Character Wrapper) - ★ 修正發光問題 ★
+           ========================================= */
+        .character-wrapper {
+            width: 280px; height: 280px; margin: 40px auto 20px;
+            position: relative; cursor: pointer; transition: transform 0.1s;
+            
+            /* ★ 關鍵修正：讓外層盒子也變圓，發光才會是圓的！ */
+            border-radius: 50%; 
+        }
+        .character-wrapper:active { transform: scale(0.95); }
+        .charging { animation: charge 0.3s ease-out; } /* 發光動畫 */
+
+        .img-container {
+            width: 100%; height: 100%; border-radius: 50%;
+            border: 10px solid #fff; box-shadow: none; background: #222;
+            overflow: hidden; display: flex; align-items: center; justify-content: center;
+        }
+        .img-container img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .dialogue-bubble {
+            position: absolute; top: -20px; right: -10px; background: #fff;
+            color: #1a1b3b; padding: 10px 15px; border-radius: 20px 20px 20px 0;
+            font-size: 14px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            border: 2px solid #fbbf24; max-width: 200px; z-index: 10; opacity: 0;
+            transform: scale(0.8); transition: all 0.3s; pointer-events: none;
+        }
+        .dialogue-bubble.show { opacity: 1; transform: scale(1); top: -30px; }
+
+        /* =========================================
+           5. 身分證 (ID Card) - ★ 修正手機跑版 ★
+           ========================================= */
+        .id-card {
+            background-color: #fff1e6; color: #4a3b32;
+            padding: 30px; margin: 50px; 
+            border-radius: 8px; transform: rotate(2deg);
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.3); position: relative;
+            background-image: radial-gradient(#d4c5b0 1px, transparent 1px);
+            background-size: 10px 10px;
+        }
+        
+        /* 證件照容器 */
+        .id-photo-box {
+            width: 120px; height: 160px;
+            background: #fff; border: 1px solid #999;
+            flex-shrink: 0; /* ★ 關鍵：禁止手機版擠壓照片，保持固定大小 */
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
+        }
+        .id-photo-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* ★ 手機版專用修正 (螢幕小於 480px 時) */
+        @media (max-width: 480px) {
+            .id-card {
+                margin: 30px 20px; /* 縮小邊距，避免撐爆 */
+                padding: 20px;
+                transform: rotate(0deg); /* 手機版不旋轉，比較好閱讀 */
+            }
+            /* 如果想要手機版照片在上面，字在下面，可以把下面這行註解拿掉 */
+            /* .id-card-content { flex-direction: column; align-items: center; text-align: center; } */
+        }
+
+        .stamp-fail {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-15deg);
+            border: 4px solid #991b1b; color: #991b1b; border-radius: 50%;
+            width: 100px; height: 100px; display: flex; align-items: center; justify-content: center;
+            font-size: 30px; font-weight: 900; opacity: 0.7; pointer-events: none; mix-blend-mode: multiply;
+        }
+/* 1. 這是大頭照的「家」，氣泡必須黏著它 */
+.avatar-box { 
+    position: relative; /* ★ 關鍵：設定基準點，氣泡才不會亂跑 */
+    cursor: pointer; 
+    display: inline-block; /* 確保盒子大小跟內容一樣大 */
+}
+
+/* 2. 這是氣泡本人 */
+.angry-bubble {
+    /* 定位設定：黏在「家」的正上方 */
+    position: absolute; 
+    bottom: 105%; /* 距離頭頂一點點距離 (100%是剛好貼齊) */
+    left: 50%; 
+    transform: translateX(-50%); /* 確保是「正」中間 */
+    
+    /* 外觀設定 */
+    background: #d00000; 
+    color: #fff; 
+    padding: 6px 12px; 
+    border-radius: 12px;
+    font-size: 13px; 
+    font-weight: bold;
+    
+    /* ★ 關鍵：防止文字太長亂行，但又不讓它太寬 */
+    white-space: pre;   /* 不自動換行 (或者改成 nowrap) */
+    width: max-content; /* 寬度依文字長度自動調整 */
+    max-width: 200px;   /* 最大寬度限制 */
+    
+    /* 動畫設定 */
+    opacity: 0; 
+    transition: opacity 0.2s, bottom 0.2s; /* 加一點飄動效果 */
+    pointer-events: none;
+    z-index: 20; /* 確保蓋在所有東西上面 */
+}
+
+/* 氣泡出現時的狀態 */
+.angry-bubble.show { 
+    opacity: 1; 
+    bottom: 115%; /* 出現時稍微往上浮一點點 */
+}
+
+/* 加一個小箭頭指向下面，看起來更像對話框 */
+.angry-bubble::after {
+    content: '';
+    position: absolute;
+    top: 100%; /* 在氣泡下面 */
+    left: 50%;
+    margin-left: -6px;
+    border-width: 6px;
+    border-style: solid;
+    border-color: #d00000 transparent transparent transparent;
+}
+        /* =========================================
+           6. 其他樣式 (滑塊、社群、頁尾)
+           ========================================= */
+        .slider-container { display: flex; overflow-x: auto; gap: 15px; padding: 20px; scrollbar-width: none; }
+        .slider-container::-webkit-scrollbar { display: none; }
+        .trait-card { flex: 0 0 260px; background: #fff; color: #333; border-radius: 20px; padding: 20px; text-align: center; }
+        
+        .social-section { padding: 0 20px; margin-bottom: 40px; }
+        .social-btn {
+            display: flex; align-items: center; justify-content: center; width: 100%;
+            padding: 18px 20px; margin-bottom: 15px; backdrop-filter: blur(5px);
+            border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            color: #fff; text-decoration: none; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.2);
+        }
+        /* 各種顏色的水晶 */
+        .btn-yt { background: linear-gradient(90deg, rgba(200, 0, 0, 0.2), rgba(255, 50, 50, 0.1)); border-color: rgba(255, 0, 0, 0.4); }
+        .btn-ig { background: linear-gradient(90deg, rgba(131, 58, 180, 0.2), rgba(253, 29, 29, 0.15), rgba(252, 176, 69, 0.15)); border-color: rgba(255, 100, 200, 0.4); }
+        .btn-line { background: linear-gradient(90deg, rgba(6, 199, 85, 0.2), rgba(100, 255, 150, 0.1)); border-color: rgba(6, 199, 85, 0.4); }
+        .btn-patreon { background: linear-gradient(90deg, rgba(255, 66, 77, 0.2), rgba(255, 150, 150, 0.1)); border-color: rgba(255, 66, 77, 0.4); }
+
+        .social-btn:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 0 25px rgba(255, 255, 255, 0.3); filter: brightness(1.2); }
+        .social-btn .icon { font-size: 28px; margin-right: 15px; }
+        .social-btn .text { font-size: 22px; font-weight: 900; letter-spacing: 1px; }
+        .social-btn small { display: block; font-size: 13px; opacity: 0.9; margin-top: 2px; }
+
+        .footer-bar { position: absolute; bottom: 0; left: 0; right: 0; background: #fbbf24; color: #4a3b32; padding: 10px 0; border-top: 4px solid #4a3b32; overflow: hidden;}
+        .marquee-content { display: inline-block; white-space: nowrap; animation: marquee 15s linear infinite; font-weight: bold; font-size: 14px; }
+        
         .text-gold { color: #fbbf24; }
         .text-center { text-align: center; }
         .flex-center { display: flex; align-items: center; justify-content: center; }
         .relative { position: relative; }
         
-        /* --- 動畫特效 --- */
         @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
-        @keyframes pop { 0% { transform: scale(0.8); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
         @keyframes charge { 0% { box-shadow: 0 0 0 rgba(251, 191, 36, 0); } 50% { box-shadow: 0 0 30px rgba(251, 191, 36, 0.8); } 100% { box-shadow: 0 0 0 rgba(251, 191, 36, 0); } }
         @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-
-        /* --- 1. 封面 --- */
-        #landing-screen {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #1a1b3b;
-            z-index: 100;
-            flex-direction: column;
-            transition: opacity 0.8s, transform 0.8s;
-            cursor: pointer;
-        }
-       #landing-screen {
-    /* ★ 關鍵：讓它變成浮動貼紙，蓋住整個視窗，不用往下滑 */
-    position: fixed; 
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 99999; /* 確保它在最上層 */
-
-    /* ★ 關鍵：背景設定 (藍色透明層 + 主圖) */
-    /* 注意：請確認你的主圖檔名是 main_1.png 還是 main_1.jpg */
-    background: linear-gradient(rgba(25, 67, 102, 0.9), rgba(25, 67, 102, 0.9)), url('bg.png');
-    background-size: cover;      /* 讓圖片填滿 */
-    background-position: center; /* 圖片置中 */
-    background-repeat: no-repeat;
-
-    /* 排版設定：讓書本置中 */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    /* 動畫設定：消失時要慢慢淡出 */
-    transition: opacity 0.8s ease, visibility 0.8s ease;
-}
-
-/* 這是隱藏時的狀態 (給 JavaScript 用的) */
-#landing-screen.hidden {
-    opacity: 0;
-    pointer-events: none; /* 讓滑鼠可以穿透過去點下面的東西 */
-    visibility: hidden;
-}
-        .book-container {
-            animation: float 3s ease-in-out infinite;
-            border: 4px solid #4a3b32;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 0 30px rgba(251, 191, 36, 0.2);
-            margin-bottom: 20px;
-        }
-
-        /* --- 2. IP 主圖 (互動核心) --- */
-        .character-wrapper {
-            width: 280px;
-            height: 280px;
-            margin: 40px auto 20px;
-            position: relative;
-            cursor: pointer; /* 手手游標 */
-            transition: transform 0.1s;
-        }
-        
-        /* 點擊時的縮放效果 */
-        .character-wrapper:active {
-            transform: scale(0.95);
-        }
-
-        /* 充能發光特效 class */
-        .charging {
-            animation: charge 0.3s ease-out;
-        }
-
-        .img-container {
-            width: 100%; height: 100%;
-            border-radius: 50%;
-            border:10px solid #fff;          
-            box-shadow: none;
-            background: #222;
-            overflow: hidden;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .img-container img { width: 100%; height: 100%; object-fit: cover; }
-        
-        /* 對話氣泡 */
-        .dialogue-bubble {
-            position: absolute;
-            top: -20px;
-            right: -10px;
-            background: #fff;
-            color: #1a1b3b;
-            padding: 10px 15px;
-            border-radius: 20px 20px 20px 0;
-            font-size: 14px;
-            font-weight: bold;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            border: 2px solid #fbbf24;
-            max-width: 200px;
-            z-index: 10;
-            opacity: 0;
-            transform: scale(0.8);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            pointer-events: none;
-        }
-        /* 氣泡顯示狀態 */
-        .dialogue-bubble.show {
-            opacity: 1;
-            transform: scale(1);
-            top: -30px; /* 稍微往上浮 */
-        }
-
-        /* --- 3. 身分證 --- */
-        .id-card {
-            background-color: #fff1e6;
-            color: #4a3b32;
-            padding:30px;
-            margin:50px;
-            border-radius: 8px;
-            transform: rotate(2deg);
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
-            position: relative;
-            background-image: radial-gradient(#d4c5b0 1px, transparent 1px);
-            background-size: 10px 10px;
-        }
-        .stamp-fail {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%) rotate(-15deg);
-            border: 4px solid #991b1b;
-            color: #991b1b;
-            border-radius: 50%;
-            width: 100px;
-            height: 100px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            font-weight: 900;
-            opacity: 0.7;
-            pointer-events: none;
-            mix-blend-mode: multiply;
-        }
-        
-        .avatar-box { position: relative; cursor: pointer; }
-        .angry-bubble {
-            position: absolute;
-            bottom: 100%; left: 50%;
-            transform: translateX(-50%);
-            background: #d00000; color: #fff;
-            padding: 5px 10px; border-radius: 10px;
-            font-size: 12px; white-space: nowrap;
-            opacity: 0; transition: opacity 0.2s; pointer-events: none;
-        }
-        .angry-bubble.show { opacity: 1; bottom: 110%; }
-
-        /* --- 4. 性格滑塊 --- */
-        .slider-container {
-            display: flex; overflow-x: auto; gap: 15px; padding: 20px;
-            scroll-snap-type: x mandatory; scrollbar-width: none;
-        }
-        .slider-container::-webkit-scrollbar { display: none; }
-        .trait-card {
-            flex: 0 0 260px; scroll-snap-align: center;
-            background: #fff; color: #333; border-radius: 20px;
-            padding: 20px; display: flex; flex-direction: column;
-            align-items: center; text-align: center;
-        }
-
-        /* --- 5. 社群按鈕 --- */
-        .social-section { padding: 0 20px; margin-bottom: 40px; }
-      /* --- 5. 社群按鈕 (有色水晶版) --- */
-        .social-section {
-            padding: 0 20px;
-            margin-bottom: 40px;
-        }
-        .social-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            padding: 18px 20px; /* 按鈕厚度 */
-            margin-bottom: 15px;
-            
-            /* 預設玻璃質感 */
-            backdrop-filter: blur(5px);
-            border-radius: 50px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            
-            color: #fff;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        /* --- 各種顏色的水晶設定 --- */
-        
-        /* Youtube: 紅寶石水晶 */
-        .btn-yt {
-            background: linear-gradient(90deg, rgba(200, 0, 0, 0.2), rgba(255, 50, 50, 0.1));
-            border-color: rgba(255, 0, 0, 0.4);
-        }
-        
-        /* Instagram: 夢幻紫水晶 */
-        .btn-ig {
-            background: linear-gradient(90deg, rgba(131, 58, 180, 0.2), rgba(253, 29, 29, 0.15), rgba(252, 176, 69, 0.15));
-            border-color: rgba(255, 100, 200, 0.4);
-        }
-        
-        /* Line: 翡翠綠水晶 */
-        .btn-line {
-            background: linear-gradient(90deg, rgba(6, 199, 85, 0.2), rgba(100, 255, 150, 0.1));
-            border-color: rgba(6, 199, 85, 0.4);
-        }
-        
-        /* Patreon: 珊瑚橘水晶 */
-        .btn-patreon {
-            background: linear-gradient(90deg, rgba(255, 66, 77, 0.2), rgba(255, 150, 150, 0.1));
-            border-color: rgba(255, 66, 77, 0.4);
-        }
-
-        /* 滑鼠移過去的效果：變亮 + 浮起 */
-        .social-btn:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
-            filter: brightness(1.2); /* 讓顏色更亮一點 */
-        }
-        
-        /* 文字與排版設定 */
-        .social-btn .text-group { text-align: center; }
-        .social-btn .icon { font-size: 28px; margin-right: 15px; filter: drop-shadow(0 0 5px rgba(255,255,255,0.5)); }
-        .social-btn .text { font-size: 22px; font-weight: 900; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-        .social-btn small { display: block; font-size: 13px; opacity: 0.9; font-weight: normal; margin-top: 2px; }
-        /* --- 6. 頁尾 --- */
-        .footer-bar {
-            position: absolute; bottom: 0; left: 0; right: 0;
-            background: #fbbf24; color: #4a3b32;
-            padding: 10px 0; overflow: hidden;
-            border-top: 4px solid #4a3b32;
-        }
-        .marquee-content {
-            display: inline-block; white-space: nowrap;
-            animation: marquee 15s linear infinite;
-            font-weight: bold; font-size: 14px;
-        }
     </style>
 </head>
-<style>
-  /* 1. 給網頁身體加一個往下的內距，這樣內容就不會被擋住 */
-  body {
-    padding-top: 70px !important; /* 強制把內容往下推 70px */
-  }
 
-  /* 2. 頁首的樣式設定 */
-  .rc-header {
-    position: fixed;       /* 固定在視窗最上方 */
-    top: 0;
-    left: 0;
-    width: 100vw;          /* 強制跟螢幕一樣寬 */
-    height: 60px;          /* 手機版高度 */
-   background: #d6c8b3;   /* 這裡改成了你圖片背景的米色 */
-    border-bottom: 1px solid #c0b29e; /* 底部線條稍微深一點的米色 */
-    z-index: 2147483647;   /* 確保在最上層 (圖層最大值) */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    margin: 0;             /* 清除邊界 */
-    padding: 0;
-    box-sizing: border-box;
-  }
-
-  .rc-header-container {
-    width: 100%;
-    max-width: 1200px;
-    padding: 0 15px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .rc-logo {
-    font-weight: bold;
-    font-size: 20px;
-    color: #000;
-    text-decoration: none;
-    line-height: 1; /* 避免行高撐開 */
-  }
-
-  .rc-right-area {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .rc-email-text {
-    font-size: 14px;
-    color: #555;
-    text-decoration: none;
-    font-weight: 500;
-    display: none; /* 手機版隱藏 */
-  }
-
-  .rc-btn {
-    background-color: #194366; /* 按鈕背景改為深藍色 */
-    color: #d6c8b3 !important; /* 按鈕文字改為米色 */
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-size: 13px;
-    font-weight: bold;
-    text-decoration: none;
-    white-space: nowrap;
-  }
-
-  /* 電腦版設定 */
-  @media (min-width: 768px) {
-    .rc-header { height: 70px; }
-    .rc-email-text { display: block; margin-right: 15px; }
-    .rc-btn { padding: 8px 16px; font-size: 14px; }
-  }
-
-</style>
-
-<div class="rc-header">
-  <div class="rc-header-container">
-    
-   <a href="#" class="rc-logo">
-   <img src="logo.png" alt="Rollcoon Logo" style="height: 60px; width: auto; vertical-align: middle;">
-</a>
-
-    <div class="rc-right-area">
-      <a href="mailto:rollcoon0905@gmail.com" class="rc-email-text">
-        rollcoon0905@gmail.com
-      </a>
-      <a href="mailto:rollcoon0905@gmail.com" class="rc-btn">
-        聯絡我們
-      </a>
+<body>
+    <div class="rc-header">
+        <div class="rc-header-container">
+            <a href="#" class="rc-logo">
+                <img src="logo.png" alt="Rollcoon Logo">
+            </a>
+            <div class="rc-right-area">
+                <a href="mailto:rollcoon0905@gmail.com" class="rc-email-text">
+                    rollcoon0905@gmail.com
+                </a>
+                <a href="mailto:rollcoon0905@gmail.com" class="rc-btn">
+                    聯絡我們
+                </a>
+            </div>
+        </div>
     </div>
 
-  </div>
-</div>
-<body>
-
+    <div id="landing-screen" class="flex-center" onclick="unlockBook()">
+        <div class="book-container" style="width: 240px; height: 320px;">
+            <div class="img-container" style="border-radius: 0; border: none;">
+                <img src="cover.png" alt="封面" onerror="this.src='https://placehold.co/480x640/1a1b3b/fbbf24?text=請放入+cover.png'">
+            </div>
+        </div>
+        <p class="text-gold" style="animation: pulse 2s infinite;">點擊解開封印...</p>
+        <h1 style="margin-top: 10px; font-size: 24px;">洛睏的祕密檔案</h1>
+    </div>
 
     <div id="app-container">
-        
-        <div id="landing-screen" class="flex-center" onclick="unlockBook()">
-            <div class="book-container" style="width: 240px; height: 320px;">
-                <div class="img-container" style="border-radius: 0; border: none;">
-                    <img src="cover.png" alt="封面" onerror="this.src='https://placehold.co/480x640/1a1b3b/fbbf24?text=請放入+cover.png'">
-                </div>
-            </div>
-            <p class="text-gold" style="animation: pulse 2s infinite;">點擊解開封印...</p>
-            <h1 style="margin-top: 10px; font-size: 24px;">洛睏的祕密檔案</h1>
-        </div>
-
         <main>
-            
             <section class="relative">
                 <div class="character-wrapper" id="char-wrapper" onclick="pokeCharacter()">
                     <div class="img-container" style="background: #ffffff;">
@@ -435,16 +302,19 @@
 
             <section>
                 <div class="id-card">
+              
                     <h3 style="border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-bottom: 10px;">魔法協會臨時證</h3>
-                    <div style="display: flex; gap: 15px;">
+                    
+                    <div class="id-card-content" style="display: flex; gap: 15px;">
+                        
                         <div class="avatar-box" onclick="pokeAvatar()">
                             <div id="angry-msg" class="angry-bubble">這裡不是大頭照!是我的施法英姿</div>
-                            <div class="img-container" style="width: 120px; height: 160px; background: #fff; border: 1px solid #999; border-radius: 0;">
+                            <div class="id-photo-box">
                                 <img src="avatar.PNG" alt="大頭照" onerror="this.src='https://placehold.co/300x400/e2e8f0/1a1b3b?text=請放入+avatar.png'">
                             </div>
                         </div>
                         
-                        <div style="flex: 1; font-size: 14px; line-height: 1.6;">
+                        <div style="flex: 1; font-size: 14px; line-height: 1.6; min-width: 0;">
                             <div><strong>姓名：</strong> 洛睏</div>
                             <div><strong>生日：</strong> 114/09/05</div>
                             <div><strong>種族：</strong> 浣熊</div>
@@ -536,9 +406,7 @@
             setTimeout(() => { bubble.classList.remove('show'); }, 2000);
         }
 
-        /* --- 🌟 主圖互動邏輯 (核心功能) --- */
-        
-        // 定義每一種狀態 (圖片檔名 + 對話)
+        /* --- 🌟 主圖互動邏輯 --- */
         const charStates = [
             { img: 'main_1.png', text: "阿洛哈～ (呼嚕...)" },
             { img: 'main_2.png', text: "... ..." },
@@ -550,35 +418,27 @@
         let clickCount = 0;
 
         function pokeCharacter() {
-            // 1. 計算下一個狀態
             clickCount++;
             const nextIndex = clickCount % charStates.length;
             const nextState = charStates[nextIndex];
 
-            // 2. 抓取元素
             const imgEl = document.getElementById('main-img');
             const bubbleEl = document.getElementById('main-dialogue');
             const wrapperEl = document.getElementById('char-wrapper');
 
-            // 3. 執行「充能」發光特效 (移除 class 再加回去，讓動畫重跑)
+            // 重跑動畫
             wrapperEl.classList.remove('charging');
-            void wrapperEl.offsetWidth; // 強制重繪
+            void wrapperEl.offsetWidth; 
             wrapperEl.classList.add('charging');
 
-            // 4. 更新圖片與文字
+            // 更新內容
             imgEl.src = nextState.img;
             bubbleEl.innerHTML = nextState.text;
 
-            // 5. 顯示氣泡 (重設動畫)
+            // 氣泡效果
             bubbleEl.classList.remove('show');
-            setTimeout(() => {
-                bubbleEl.classList.add('show');
-            }, 100);
-
-            // 6. 3秒後自動隱藏氣泡
-            setTimeout(() => {
-                bubbleEl.classList.remove('show');
-            }, 3000);
+            setTimeout(() => { bubbleEl.classList.add('show'); }, 100);
+            setTimeout(() => { bubbleEl.classList.remove('show'); }, 3000);
         }
     </script>
 </body>
