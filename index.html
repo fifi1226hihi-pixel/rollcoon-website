@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>洛睏的秘密檔案</title>
+    <title>洛睏的機密檔案</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;900&display=swap" rel="stylesheet">
     
     <style>
         /* =========================================
@@ -17,7 +17,7 @@
         body {
             background-color: #0f1025;
             color: #fff;
-            font-family: 'Zen Maru Gothic', sans-serif;
+            font-family: 'Noto Serif TC', serif;
             display: flex;
             justify-content: center;
             min-height: 100vh;
@@ -59,12 +59,12 @@
         
         .rc-right-area { display: flex; align-items: center; gap: 10px; }
         .rc-email-text {
-            font-size: 14px; color: #555; text-decoration: none; font-weight: 500;
+            font-size: 14px; color: #555; text-decoration: none; font-weight: 600;
             display: none; 
         }
         .rc-btn {
             background-color: #194366; color: #d6c8b3 !important;
-            padding: 6px 12px; border-radius: 4px; font-size: 13px; font-weight: bold;
+            padding: 6px 12px; border-radius: 4px; font-size: 13px; font-weight: 900;
             text-decoration: none; white-space: nowrap;
         }
         @media (min-width: 768px) {
@@ -87,7 +87,7 @@
         #landing-screen.hidden { opacity: 0; pointer-events: none; visibility: hidden; }
         
         .book-container {
-            animation: float 3s ease-in-out infinite; border: 4px solid #4a3b32;
+            animation: float 3s ease-in-out infinite; border: none;
             border-radius: 12px; overflow: hidden; box-shadow: 0 0 30px rgba(251, 191, 36, 0.2);
             margin-bottom: 20px;
             background: #000; 
@@ -106,7 +106,7 @@
 
         .img-container {
             width: 100%; height: 100%; border-radius: 50%;
-            border: 10px solid #fff; box-shadow: none; background: #222;
+            border: none; box-shadow: none; background: #222;
             overflow: hidden; display: flex; align-items: center; justify-content: center;
         }
         .img-container img { width: 100%; height: 100%; object-fit: cover; }
@@ -114,33 +114,69 @@
         .dialogue-bubble {
             position: absolute; top: -20px; right: -10px; background: #fff;
             color: #1a1b3b; padding: 10px 15px; border-radius: 20px 20px 20px 0;
-            font-size: 14px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            font-size: 14px; font-weight: 900; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             border: 2px solid #fbbf24; max-width: 200px; z-index: 10; opacity: 0;
             transform: scale(0.8); transition: all 0.3s; pointer-events: none;
         }
         .dialogue-bubble.show { opacity: 1; transform: scale(1); top: -30px; }
 
         /* =========================================
-           5. 身分證 (ID Card) - ★ 金光發光版 ★
+           5. 身分證 (ID Card) - ★ 這裡已修改 ★
            ========================================= */
         .id-card {
-            background-color: #fff1e6; 
-            color: #2c1e12; font-weight: 700;
+            /* --- 背景修改開始 --- */
+            background-color: #FAF8F0; /* 備用底色：米色 */
+            
+            /* ⚠️ 請確保您有一張 'card_bg.png' 放在這裡，就會顯示素面米色+印花 */
+            background-image: url('card_bg.png'); 
+            
+            background-size: cover;       /* 確保圖片填滿卡片 */
+            background-position: center;  /* 居中 */
+            background-repeat: no-repeat; /* 不重複 */
+            /* --- 背景修改結束 --- */
+
+            color: #4a3b2a; /* 改為深棕色，在米色上比較清楚 */
+            font-weight: 700;
             padding: 30px; margin: 50px; 
-            border-radius: 8px; 
+            border-radius: 12px;
             
-            /* ★ 改成發光效果 (Glow) */
-            border: 2px solid rgba(251, 191, 36, 0.6); /* 金邊 */
-            box-shadow: 0 0 20px rgba(251, 191, 36, 0.4), 0 0 40px rgba(251, 191, 36, 0.2);
+            /* 發光效果 (保留魔法感) */
+         
+            box-shadow: 0 0 25px rgba(255, 204, 0, 0.4); 
             
-            position: relative;
-            background-image: radial-gradient(#d4c5b0 1px, transparent 1px);
-            background-size: 10px 10px;
-            
-            /* 使用電腦版動畫 (手機也用這個) */
+            position: relative; overflow: hidden;
             animation: float-card-desktop 4s ease-in-out infinite;
         }
         
+        /* ★ 標題設定：Flexbox 強制分散對齊 */
+        .id-title {
+            display: flex;
+            justify-content: space-between; /* 關鍵：左右撐開，平均分布 */
+            align-items: center;
+            width: 100%;
+            
+            font-size: 34px;       /* 夠大 */
+            font-weight: 900;      /* 夠粗 */
+            color: #2c1e12;        /* 深色字體 */
+            
+            border-bottom: 3px solid #aaa; 
+            padding-bottom: 12px; 
+            margin-bottom: 20px;
+            line-height: 1;
+        }
+
+        /* 反光層 */
+        .id-card::after {
+            content: "";
+            position: absolute;
+            top: 0; left: -100%; 
+            width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+            transform: skewX(-25deg);
+            animation: shine-move 3s infinite;
+            pointer-events: none; 
+        }
+
         .id-card strong { font-weight: 900; color: #000; }
 
         .id-photo-box {
@@ -148,23 +184,25 @@
             background: #fff; border: 1px solid #999;
             flex-shrink: 0; 
             display: flex; align-items: center; justify-content: center; overflow: hidden;
+            z-index: 2;
         }
         .id-photo-box img { width: 100%; height: 100%; object-fit: cover; }
 
         @media (max-width: 480px) {
             .id-card {
-                margin: 30px 20px; padding: 20px; 
-                /* ★ 手機版現在也會歪歪的了！(但角度稍微小一點避免切到) */
+                margin: 30px 20px; padding: 25px; 
                 animation: float-card-mobile-tilted 4s ease-in-out infinite;
             }
+            /* 手機版字體稍微調整，避免爆開 */
+            .id-title { font-size: 28px; }
         }
 
-        .avatar-box { position: relative; cursor: pointer; display: inline-block; }
+        .avatar-box { position: relative; cursor: pointer; display: inline-block; z-index: 5; }
 
         .angry-bubble {
             position: absolute; bottom: 105%; left: 50%; transform: translateX(-50%);
             background: #d00000; color: #fff; padding: 6px 12px; border-radius: 12px;
-            font-size: 13px; font-weight: bold;
+            font-size: 13px; font-weight: 900;
             white-space: pre; width: max-content; max-width: 200px;
             opacity: 0; transition: opacity 0.2s, bottom 0.2s; pointer-events: none;
             z-index: 20;
@@ -176,7 +214,7 @@
         }
 
         /* =========================================
-           6. 性格滑塊 (Trait Cards) - ★ RPG技能卡風格 ★
+           6. 性格滑塊 (Trait Cards)
            ========================================= */
         .slider-container { 
             display: flex; overflow-x: auto; gap: 25px; padding: 25px 25px 50px 25px; 
@@ -186,32 +224,17 @@
         
         .trait-card { 
             flex: 0 0 260px; scroll-snap-align: center; 
-            /* 卡片外觀大改版 */
-            color: #fff; /* 文字變白 */
-            border-radius: 20px; padding: 25px 20px; text-align: center; 
-            
-            /* 立體陰影 */
+            color: #fff; border-radius: 20px; padding: 25px 20px; text-align: center; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.2) inset;
             border: 1px solid rgba(255,255,255,0.1);
-            
             transform: scale(0.98); transition: transform 0.3s;
             position: relative; overflow: hidden;
         }
         
-        /* 1. 魔法天才 (紫色/深藍漸層) */
-        .card-magic {
-            background: linear-gradient(135deg, #4f46e5 0%, #312e81 100%);
-        }
-        /* 2. 生活白痴 (橘紅/深紅漸層) */
-        .card-idiot {
-            background: linear-gradient(135deg, #f97316 0%, #9a3412 100%);
-        }
-        /* 3. 膽小鬼 (亮藍/深藍漸層) */
-        .card-coward {
-            background: linear-gradient(135deg, #3b82f6 0%, #1e3a8a 100%);
-        }
+        .card-magic { background: linear-gradient(135deg, #4f46e5 0%, #312e81 100%); }
+        .card-idiot { background: linear-gradient(135deg, #f97316 0%, #9a3412 100%); }
+        .card-coward { background: linear-gradient(135deg, #3b82f6 0%, #1e3a8a 100%); }
 
-        /* 卡片文字樣式 */
         .trait-card .icon { font-size: 45px; margin-bottom: 10px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3)); }
         .trait-card h4 {
             font-size: 22px; font-weight: 900; margin: 5px 0 15px 0;
@@ -264,17 +287,21 @@
         @keyframes charge { 0% { box-shadow: 0 0 0 rgba(251, 191, 36, 0); } 50% { box-shadow: 0 0 30px rgba(251, 191, 36, 0.8); } 100% { box-shadow: 0 0 0 rgba(251, 191, 36, 0); } }
         @keyframes scroll-continuous { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         
-        /* 電腦版懸浮 */
         @keyframes float-card-desktop {
             0% { transform: rotate(2deg) translateY(0px); }
             50% { transform: rotate(2deg) translateY(-8px); }
             100% { transform: rotate(2deg) translateY(0px); }
         }
-        /* 手機版懸浮 (★ 有微微的傾斜了！ ★) */
         @keyframes float-card-mobile-tilted {
             0% { transform: rotate(1deg) translateY(0px); }
             50% { transform: rotate(1deg) translateY(-8px); }
             100% { transform: rotate(1deg) translateY(0px); }
+        }
+
+        @keyframes shine-move {
+            0% { left: -100%; opacity: 0; }
+            50% { opacity: 1; }
+            100% { left: 200%; opacity: 0; }
         }
     </style>
 </head>
@@ -320,7 +347,7 @@
                 </div>
 
                 <div class="text-center">
-                    <h2 style="font-size: 28px; margin-bottom: 5px;">魔法浣熊 洛睏</h2>
+                    <h2 style="font-size: 28px; margin-bottom: 5px;">洛睏</h2>
                     <p style="color: #94a3b8; font-size: 14px;">Rollcoon Team Mascot</p>
                     <div style="margin-top: 10px; display: flex; gap: 5px; justify-content: center;">
                         <span style="background: #3B4C60; font-size: 12px; padding: 2px 8px; border-radius: 10px;">🧥 萬年藍披風</span>
@@ -331,7 +358,9 @@
 
             <section>
                 <div class="id-card">
-                    <h3 style="border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-bottom: 10px;">魔法協會臨時證</h3>
+                    <div class="id-title">
+                        <span>魔</span><span>法</span><span>臨</span><span>時</span><span>證</span>
+                    </div>
                     
                     <div class="id-card-content" style="display: flex; gap: 15px;">
                         <div class="avatar-box" onclick="pokeAvatar()">
@@ -348,7 +377,7 @@
                             <div><strong>職業：</strong> 見習法師</div>
                             <div><strong>特徵：</strong> 右邊虎牙缺牙</div>
                             <div><strong>必殺技：</strong> 躲在隊友後面</div>
-                            <div style="margin-top: 5px; font-size: 12px; color: #666;">ID: ROLLOON-001</div>
+                            <div style="margin-top: 5px; font-size: 12px; color: #666;">ID: ROLLCOON-001</div>
                         </div>
                     </div>
                 </div>
@@ -439,10 +468,10 @@
 
         const charStates = [
             { img: 'main_1.png', text: "阿洛哈～ (呼嚕...)" },
-            { img: 'main_2.png', text: "... ..." },
-            { img: 'main_3.png', text: "再戳偶要丟火球囉！(生氣)" },
-            { img: 'main_4.png', text: "好啦好啦，分泥喝一口湯..." },
-            { img: 'main_5.png', text: "嗚嗚... 不要吃偶... (哭)" }
+            { img: 'main_2.png', text: "偷摸偶 是愛上偶了嗎" },
+            { img: 'main_3.png', text: "歡迎餵食偶南瓜湯" },
+            { img: 'main_4.png', text: "不給偶吃飯 偶會氣噗噗喔" },
+            { img: 'main_5.png', text: "嗚嗚... 快要餓死偶了... (哭)" }
         ];
 
         let clickCount = 0;
