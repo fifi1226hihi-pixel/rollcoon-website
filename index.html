@@ -77,7 +77,7 @@
            ========================================= */
         #landing-screen {
             position: fixed; inset: 0; height: 100dvh; width: 100vw; z-index: 99999;
-            background: radial-gradient(circle at center, rgba(15, 16, 37, 0.5) 0%, rgba(15, 16, 37, 0.95) 100%), url('bg.png');
+            background: radial-gradient(circle at center, rgba(15, 16, 37, 0.5) 0%, rgba(15, 16, 37, 0.98) 100%), url('bg.png');
             background-size: cover; background-position: center; background-repeat: no-repeat;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: opacity 0.8s ease, visibility 0.8s ease; cursor: pointer;
@@ -85,23 +85,31 @@
         }
         #landing-screen.hidden { opacity: 0; pointer-events: none; visibility: hidden; }
         
-        /* ▶ 無框檔案夾：保留懸浮＋發光 */
+        /* ▶ 無框檔案夾：保留懸浮＋發光，手機版縮光暈 */
         .book-container {
             display: flex;
             align-items: center;
             justify-content: center;
             animation: float 3s ease-in-out infinite;
+            padding: 8px;
         }
         .unlock-folder {
-            width: 220px;
+            width: min(220px, 60vw);
             height: auto;
             image-rendering: auto;
-            filter: drop-shadow(0 0 25px rgba(251, 191, 36, 0.8));
+            filter: drop-shadow(0 0 18px rgba(251, 191, 36, 0.8));
             transition: transform 0.2s ease, filter 0.2s ease;
         }
         .book-container:active .unlock-folder {
             transform: scale(0.96);
-            filter: drop-shadow(0 0 35px rgba(251, 191, 36, 1));
+            filter: drop-shadow(0 0 26px rgba(251, 191, 36, 1));
+        }
+
+        @media (max-width: 480px) {
+            .unlock-folder {
+                width: min(190px, 65vw);
+                filter: drop-shadow(0 0 14px rgba(251, 191, 36, 0.7));
+            }
         }
 
         /* =========================================
@@ -575,6 +583,7 @@
         ];
 
         let clickCount = 0;
+        let dialogueHideTimer = null; // 控制泡泡關閉時間的計時器
 
         function pokeCharacter() {
             clickCount++;
@@ -585,16 +594,29 @@
             const bubbleEl = document.getElementById('main-dialogue');
             const wrapperEl = document.getElementById('char-wrapper');
 
+            // 角色「充能」動畫重置
             wrapperEl.classList.remove('charging');
-            void wrapperEl.offsetWidth; 
+            void wrapperEl.offsetWidth;
             wrapperEl.classList.add('charging');
 
+            // 換圖 & 換文字
             imgEl.src = nextState.img;
             bubbleEl.innerHTML = nextState.text;
 
+            // 讓泡泡的出現動畫每次都重新跑
             bubbleEl.classList.remove('show');
-            setTimeout(() => { bubbleEl.classList.add('show'); }, 100);
-            setTimeout(() => { bubbleEl.classList.remove('show'); }, 3000);
+            void bubbleEl.offsetWidth;
+            bubbleEl.classList.add('show');
+
+            // 如果之前有設定關閉計時器，把它清掉，避免「一下就消失」
+            if (dialogueHideTimer) {
+                clearTimeout(dialogueHideTimer);
+            }
+
+            // 重新計時：例如 3.5 秒後泡泡才收回去
+            dialogueHideTimer = setTimeout(() => {
+                bubbleEl.classList.remove('show');
+            }, 3500);
         }
     </script>
 </body>
