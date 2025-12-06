@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>洛睏的秘密檔案</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,23 +23,21 @@
             min-height: 100vh;
             overflow-x: hidden;
             user-select: none; 
-            /* ★ 強制往下推 70px，避免被頁首擋住 */
             padding-top: 70px !important;
+            overscroll-behavior: none; 
         }
 
-        /* --- 手機版面模擬容器 --- */
         #app-container {
             width: 100%;
             max-width: 480px;
-            background-image: linear-gradient(rgba(15, 16, 37, 0.8), rgba(15, 16, 37, 0.8)), url('bg.png');
+            /* 背景圖設定 */
+            background-image: linear-gradient(rgba(15, 16, 37, 0.8), rgba(15, 16, 37, 0.8)), url('main_1.png');
             background-size: cover;
             background-position: center;
             min-height: 100vh;
             position: relative;
             box-shadow: 0 0 50px rgba(0,0,0,0.5);
             overflow: hidden;
-            
-            /* ★ 關鍵修正：底部留白加大到 120px，避免被固定跑馬燈擋住內容 */
             padding-bottom: 120px;
         }
 
@@ -47,20 +45,10 @@
            2. 懸浮頁首 (Header)
            ========================================= */
         .rc-header {
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100vw; 
-            height: 60px;
-            background: #d6c8b3; 
-            border-bottom: 1px solid #c0b29e;
-            
-            /* 層級比封面低 (1000 < 99999) */
+            position: fixed; top: 0; left: 0; width: 100vw; height: 60px;
+            background: #d6c8b3; border-bottom: 1px solid #c0b29e;
             z-index: 1000; 
-            
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
         .rc-header-container {
@@ -72,7 +60,7 @@
         .rc-right-area { display: flex; align-items: center; gap: 10px; }
         .rc-email-text {
             font-size: 14px; color: #555; text-decoration: none; font-weight: 500;
-            display: none; /* 手機隱藏 */
+            display: none; 
         }
         .rc-btn {
             background-color: #194366; color: #d6c8b3 !important;
@@ -86,17 +74,24 @@
         }
 
         /* =========================================
-           3. 封面與特效
+           3. 封面與特效 (★ 修正圖片不見的問題 ★)
            ========================================= */
         #landing-screen {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            /* 層級最高，蓋住 Header */
+            position: fixed; 
+            inset: 0; 
+            height: 100dvh; 
+            width: 100vw;
             z-index: 99999;
-            background: linear-gradient(rgba(25, 67, 102, 0.9), rgba(25, 67, 102, 0.9)), url('bg.png');
+            
+            /* ★ 關鍵修正 1：透明度改為 0.6 (原本0.95太黑了) */
+            /* ★ 關鍵修正 2：圖片指定為 main_1.png (確保有圖) */
+            background: linear-gradient(rgba(25, 67, 102, 0.6), rgba(25, 67, 102, 0.6)), url('main_1.png');
+            
             background-size: cover; background-position: center; background-repeat: no-repeat;
+            
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: opacity 0.8s ease, visibility 0.8s ease; cursor: pointer;
-            touch-action: none; /* 防止在封面滑動 */
+            touch-action: none;
         }
         #landing-screen.hidden { opacity: 0; pointer-events: none; visibility: hidden; }
         
@@ -104,6 +99,8 @@
             animation: float 3s ease-in-out infinite; border: 4px solid #4a3b32;
             border-radius: 12px; overflow: hidden; box-shadow: 0 0 30px rgba(251, 191, 36, 0.2);
             margin-bottom: 20px;
+            /* 讓中間的書本背景黑一點，凸顯封面 */
+            background: #000; 
         }
 
         /* =========================================
@@ -112,7 +109,6 @@
         .character-wrapper {
             width: 280px; height: 280px; margin: 40px auto 20px;
             position: relative; cursor: pointer; transition: transform 0.1s;
-            /* 讓外層盒子也變圓，發光才會是圓的 */
             border-radius: 50%; 
         }
         .character-wrapper:active { transform: scale(0.95); }
@@ -135,39 +131,35 @@
         .dialogue-bubble.show { opacity: 1; transform: scale(1); top: -30px; }
 
         /* =========================================
-           5. 身分證 (ID Card)
+           5. 身分證 (ID Card) - 懸浮特效
            ========================================= */
         .id-card {
             background-color: #fff1e6; color: #4a3b32;
             padding: 30px; margin: 50px; 
-            border-radius: 8px; transform: rotate(2deg);
+            border-radius: 8px; 
             box-shadow: 5px 5px 15px rgba(0,0,0,0.3); position: relative;
             background-image: radial-gradient(#d4c5b0 1px, transparent 1px);
             background-size: 10px 10px;
+            animation: float-card-desktop 4s ease-in-out infinite;
         }
         
-        /* 證件照容器 */
         .id-photo-box {
             width: 120px; height: 160px;
             background: #fff; border: 1px solid #999;
-            flex-shrink: 0; /* 禁止擠壓 */
+            flex-shrink: 0; 
             display: flex; align-items: center; justify-content: center; overflow: hidden;
         }
         .id-photo-box img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* 手機版修正 */
         @media (max-width: 480px) {
             .id-card {
-                margin: 30px 20px; padding: 20px; transform: rotate(0deg);
+                margin: 30px 20px; padding: 20px; 
+                animation: float-card-mobile 4s ease-in-out infinite;
             }
         }
 
-        /* 大頭照區域設定 */
-        .avatar-box { 
-            position: relative; cursor: pointer; display: inline-block;
-        }
+        .avatar-box { position: relative; cursor: pointer; display: inline-block; }
 
-        /* 氣泡設定 */
         .angry-bubble {
             position: absolute; bottom: 105%; left: 50%; transform: translateX(-50%);
             background: #d00000; color: #fff; padding: 6px 12px; border-radius: 12px;
@@ -183,7 +175,7 @@
         }
 
         /* =========================================
-           6. 其他樣式 (滑塊、社群)
+           6. 其他樣式
            ========================================= */
         .slider-container { display: flex; overflow-x: auto; gap: 15px; padding: 20px; scrollbar-width: none; }
         .slider-container::-webkit-scrollbar { display: none; }
@@ -196,7 +188,7 @@
             border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             color: #fff; text-decoration: none; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.2);
         }
-        /* 各種顏色的水晶 */
+        
         .btn-yt { background: linear-gradient(90deg, rgba(200, 0, 0, 0.2), rgba(255, 50, 50, 0.1)); border-color: rgba(255, 0, 0, 0.4); }
         .btn-ig { background: linear-gradient(90deg, rgba(131, 58, 180, 0.2), rgba(253, 29, 29, 0.15), rgba(252, 176, 69, 0.15)); border-color: rgba(255, 100, 200, 0.4); }
         .btn-line { background: linear-gradient(90deg, rgba(6, 199, 85, 0.2), rgba(100, 255, 150, 0.1)); border-color: rgba(6, 199, 85, 0.4); }
@@ -208,37 +200,39 @@
         .social-btn small { display: block; font-size: 13px; opacity: 0.9; margin-top: 2px; }
 
         /* =========================================
-           7. 固定底部跑馬燈 (無縫循環版) ★ 新修正 ★
+           7. 固定底部跑馬燈
            ========================================= */
         .footer-bar { 
-            position: fixed; /* 固定在底部 */
-            bottom: 0; left: 0; width: 100%; z-index: 1000;
+            position: fixed; bottom: 0; left: 0; width: 100%; z-index: 1000;
             background: #fbbf24; color: #4a3b32; padding: 12px 0;
             border-top: 4px solid #4a3b32; overflow: hidden; white-space: nowrap;
         }
-        
-        .marquee-track {
-            display: inline-flex; /* 讓兩份文字橫向排好 */
-            animation: scroll-continuous 20s linear infinite; /* 無縫捲動 */
-        }
-        
-        .marquee-content { 
-            padding-right: 50px; /* 文字間距 */
-            font-weight: bold; font-size: 14px; letter-spacing: 1px;
-        }
+        .marquee-track { display: inline-flex; animation: scroll-continuous 20s linear infinite; }
+        .marquee-content { padding-right: 50px; font-weight: bold; font-size: 14px; letter-spacing: 1px; }
 
         .text-gold { color: #fbbf24; }
         .text-center { text-align: center; }
         .flex-center { display: flex; align-items: center; justify-content: center; }
         .relative { position: relative; }
         
-        /* 動畫區 */
+        /* =========================================
+           8. 動畫 Keyframes
+           ========================================= */
         @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
         @keyframes charge { 0% { box-shadow: 0 0 0 rgba(251, 191, 36, 0); } 50% { box-shadow: 0 0 30px rgba(251, 191, 36, 0.8); } 100% { box-shadow: 0 0 0 rgba(251, 191, 36, 0); } }
-        
-        /* ★ 無縫捲動動畫：只需要移動 50% (因為我們複製了兩份) */
         @keyframes scroll-continuous { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        
+        @keyframes float-card-desktop {
+            0% { transform: rotate(2deg) translateY(0px); box-shadow: 5px 5px 15px rgba(0,0,0,0.3); }
+            50% { transform: rotate(2deg) translateY(-8px); box-shadow: 5px 15px 25px rgba(0,0,0,0.2); }
+            100% { transform: rotate(2deg) translateY(0px); box-shadow: 5px 5px 15px rgba(0,0,0,0.3); }
+        }
+        @keyframes float-card-mobile {
+            0% { transform: rotate(0deg) translateY(0px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+            50% { transform: rotate(0deg) translateY(-8px); box-shadow: 0 15px 25px rgba(0,0,0,0.2); }
+            100% { transform: rotate(0deg) translateY(0px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        }
     </style>
 </head>
 
@@ -261,8 +255,8 @@
 
     <div id="landing-screen" class="flex-center" onclick="unlockBook()">
         <div class="book-container" style="width: 240px; height: 320px;">
-            <div class="img-container" style="border-radius: 0; border: none;">
-                <img src="cover.png" alt="封面" onerror="this.src='https://placehold.co/480x640/1a1b3b/fbbf24?text=請放入+cover.png'">
+            <div style="width: 100%; height: 100%; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                <img src="cover.png" alt="封面" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://placehold.co/480x640/1a1b3b/fbbf24?text=請放入+cover.png'">
             </div>
         </div>
         <p class="text-gold" style="animation: pulse 2s infinite;">點擊解開封印...</p>
@@ -297,7 +291,6 @@
                     <h3 style="border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-bottom: 10px;">魔法協會臨時證</h3>
                     
                     <div class="id-card-content" style="display: flex; gap: 15px;">
-                        
                         <div class="avatar-box" onclick="pokeAvatar()">
                             <div id="angry-msg" class="angry-bubble">這裡不是大頭照!<br>是我的施法英姿</div>
                             <div class="id-photo-box">
@@ -351,11 +344,11 @@
                     </div>
                 </a>
 
-                <a href="https://www.instagram.com/rollcoon_?igsh=MWtmcnVhbXJpanl5OQ%3D%3D&utm_source=qr" target="_blank" class="social-btn btn-ig">
-                    <div class="icon">📸</div>
+                <a href="https://www.patreon.com/cw/Rollcoon" target="_blank" class="social-btn btn-patreon">
+                    <div class="icon">🍖</div>
                     <div class="text-group">
-                        <div class="text">Instagram</div>
-                        <small>看看偶和人類們ㄉ日常</small>
+                        <div class="text">Patreon</div>
+                        <small>餵食我偶好餓</small>
                     </div>
                 </a>
 
@@ -366,12 +359,12 @@
                         <small>來找偶聊天</small>
                     </div>
                 </a>
-
-                <a href="https://www.patreon.com/cw/Rollcoon" target="_blank" class="social-btn btn-patreon">
-                    <div class="icon">🍖</div>
+                
+                <a href="https://www.instagram.com/rollcoon_?igsh=MWtmcnVhbXJpanl5OQ%3D%3D&utm_source=qr" target="_blank" class="social-btn btn-ig">
+                    <div class="icon">📸</div>
                     <div class="text-group">
-                        <div class="text">Patreon</div>
-                        <small>餵食我偶好餓</small>
+                        <div class="text">Instagram</div>
+                        <small>看看偶和人類們ㄉ日常</small>
                     </div>
                 </a>
             </section>
@@ -390,22 +383,17 @@
     </div>
 
     <script>
-        // 解鎖封面
         function unlockBook() {
-            // 強制滾動到網頁最上方
             window.scrollTo(0, 0);
-            // 隱藏封面
             document.getElementById('landing-screen').classList.add('hidden');
         }
 
-        // 大頭照戳戳樂
         function pokeAvatar() {
             const bubble = document.getElementById('angry-msg');
             bubble.classList.add('show');
             setTimeout(() => { bubble.classList.remove('show'); }, 2000);
         }
 
-        /* --- 🌟 主圖互動邏輯 --- */
         const charStates = [
             { img: 'main_1.png', text: "阿洛哈～ (呼嚕...)" },
             { img: 'main_2.png', text: "... ..." },
@@ -425,16 +413,13 @@
             const bubbleEl = document.getElementById('main-dialogue');
             const wrapperEl = document.getElementById('char-wrapper');
 
-            // 重跑動畫
             wrapperEl.classList.remove('charging');
             void wrapperEl.offsetWidth; 
             wrapperEl.classList.add('charging');
 
-            // 更新內容
             imgEl.src = nextState.img;
             bubbleEl.innerHTML = nextState.text;
 
-            // 氣泡效果
             bubbleEl.classList.remove('show');
             setTimeout(() => { bubbleEl.classList.add('show'); }, 100);
             setTimeout(() => { bubbleEl.classList.remove('show'); }, 3000);
