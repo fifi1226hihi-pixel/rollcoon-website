@@ -214,7 +214,7 @@
         }
 
         /* =========================================
-           6. 性格滑塊 (Trait Cards) - 水晶質感版
+           6. 性格滑塊 (Trait Cards) - 水晶質感 + 翻牌
            ========================================= */
         .slider-container { 
             display: flex; overflow-x: auto; gap: 18px; padding: 25px 18px 40px 18px; 
@@ -223,11 +223,11 @@
         .slider-container::-webkit-scrollbar { display: none; }
         
         .trait-card { 
-            flex: 0 0 210px;  /* 縮窄一點看起來更精緻 */
+            flex: 0 0 210px;
             scroll-snap-align: center; 
             color: #f9fafb;
             border-radius: 22px;
-            padding: 22px 16px;
+            padding: 0;              /* 改成由內層控制 padding，避免大小亂變 */
             text-align: center;
             position: relative; 
             overflow: hidden;
@@ -244,11 +244,16 @@
 
             transform: scale(0.98);
             transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+            
+            height: 230px;          /* 固定高度，翻面時不會縮小 */
+            perspective: 1000px;    /* 給內層 3D 翻轉用 */
         }
+        /* 反光層只在卡片裡面，不再超出邊界 */
         .trait-card::before {
             content:"";
             position:absolute;
-            inset:-40%;
+            inset:0;
+            border-radius: inherit;
             background: radial-gradient(circle at 0% 0%, rgba(255,255,255,0.22), transparent 55%);
             opacity:0.65;
             mix-blend-mode: screen;
@@ -264,6 +269,36 @@
             border-color: rgba(255,255,255,0.85);
         }
         
+        /* 翻面內層，只轉裡面內容 */
+        .trait-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+        .trait-card.flipped .trait-inner {
+            transform: rotateY(180deg);
+        }
+
+        .trait-face {
+            position: absolute;
+            inset: 0;
+            padding: 22px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            backface-visibility: hidden;
+        }
+        .trait-front {
+            /* 正面維持原本排版 */
+        }
+        .trait-back {
+            transform: rotateY(180deg);
+            padding: 10px; /* 讓圖片不要貼到邊界，保留一圈水晶框 */
+        }
+
         /* 色調微差：只當色彩點綴 */
         .card-magic { border-color: rgba(129,140,248,0.8); }
         .card-idiot { border-color: rgba(251,146,60,0.9); }
@@ -274,19 +309,30 @@
             filter: drop-shadow(0 4px 10px rgba(0,0,0,0.4));
         }
         .trait-card h4 {
-            font-size: 22px;   /* 標題加大 */
+            font-size: 22px;
             font-weight: 900;
             margin: 8px 0 14px 0;
             letter-spacing: 1.5px;
             text-shadow: 0 2px 6px rgba(0,0,0,0.5);
         }
         .trait-card p {
-            font-size: 13px;   /* 內文縮小 */
+            font-size: 13px;
             font-weight: 700; 
             line-height: 1.7;
             opacity: 0.95;
             margin: 0 6px;
             text-shadow: 0 1px 2px rgba(0,0,0,0.7);
+        }
+
+        /* 背面圖片滿版 + 一點水晶感 */
+        .trait-back img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 18px;
+            box-shadow:
+                0 0 0 1px rgba(255,255,255,0.6) inset,
+                0 0 18px rgba(255,255,255,0.25) inset;
         }
 
         /* =========================================
@@ -377,7 +423,7 @@
             z-index: 2;
         }
         .social-mascot img {
-            width: 90px;           /* 再小一點 */
+            width: 90px;
             height: auto;
             display: block;
         }
@@ -389,7 +435,7 @@
             transform: translate(-50%, 0) scale(1);
         }
 
-        /* 四個按鍵不同角度的小洛睏（檔名完全照妳現在的） */
+        /* 四個按鍵不同角度的小洛睏 */
         .mascot-yt img { transform: rotate(-10deg); }
         .mascot-pt img { transform: rotate(6deg); }
         .mascot-line img { transform: rotate(-4deg); }
@@ -489,12 +535,10 @@
                 margin: 0;
             }
 
-            /* 性格滑塊置中顯示，整排比較寬 */
             .slider-container {
                 justify-content: center;
             }
 
-            /* 社群按鈕桌機版改成兩欄 */
             .social-section {
                 margin-top: 10px;
                 text-align: center;
@@ -592,24 +636,50 @@
                 <p class="text-center" style="font-size: 14px; opacity: 0.4;">( 試著戳戳看大頭照? )</p>
             </section>
 
-            <!-- 性格滑塊：水晶質感版 -->
+            <!-- 性格滑塊：水晶質感版 + 翻牌 -->
             <section>
                 <h3 class="text-center text-gold" style="margin-top: 20px;">天才還是白痴?</h3>
                 <div class="slider-container">
-                    <div class="trait-card card-magic">
-                        <div class="icon">🪄</div>
-                        <h4>魔法天才?!</h4>
-                        <p>哼哼！看偶骰出 N20！<br>這就是命運之門ㄉ選擇啦～</p>
+                    <!-- 卡片 1：魔法天才 -->
+                    <div class="trait-card card-magic" data-card="t1">
+                        <div class="trait-inner">
+                            <div class="trait-face trait-front">
+                                <div class="icon">🪄</div>
+                                <h4>魔法天才?!</h4>
+                                <p>哼哼！ N20ㄉ力量！<br>看偶把南瓜變超大～</p>
+                            </div>
+                            <div class="trait-face trait-back">
+                                <img src="t1.png" alt="魔法天才" onerror="this.src='https://placehold.co/300x300/1e293b/fbbf24?text=t1.png'">
+                            </div>
+                        </div>
                     </div>
-                    <div class="trait-card card-idiot">
-                        <div class="icon">💥</div>
-                        <h4>生活白痴</h4>
-                        <p>那個...<br>微波爐為什麼會發出火光？<br>偶只是想熱南瓜湯...</p>
+
+                    <!-- 卡片 2：生活白痴 -->
+                    <div class="trait-card card-idiot" data-card="t2">
+                        <div class="trait-inner">
+                            <div class="trait-face trait-front">
+                                <div class="icon">💥</div>
+                                <h4>生活白痴</h4>
+                                <p>那個...<br>微波爐為什麼會發出火光？<br>偶只是想熱南瓜湯...</p>
+                            </div>
+                            <div class="trait-face trait-back">
+                                <img src="t2.png" alt="生活白痴" onerror="this.src='https://placehold.co/300x300/1e293b/fbbf24?text=t2.png'">
+                            </div>
+                        </div>
                     </div>
-                    <div class="trait-card card-coward">
-                        <div class="icon">🛡️</div>
-                        <h4>膽小鬼</h4>
-                        <p>嗚嗚... 泥先走... <br>偶在後面幫泥加Buff... <br>偶真ㄉ不怕黑喔！</p>
+
+                    <!-- 卡片 3：膽小鬼 -->
+                    <div class="trait-card card-coward" data-card="t3">
+                        <div class="trait-inner">
+                            <div class="trait-face trait-front">
+                                <div class="icon">🛡️</div>
+                                <h4>膽小鬼</h4>
+                                <p>嗚嗚... 泥先走... <br>偶在後面幫泥加Buff... <br>偶真沒有害怕啦！</p>
+                            </div>
+                            <div class="trait-face trait-back">
+                                <img src="t3.png" alt="膽小鬼" onerror="this.src='https://placehold.co/300x300/1e293b/fbbf24?text=t3.png'">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -725,14 +795,19 @@
             bubbleEl.classList.remove('show');
             showDialogueTimeout = setTimeout(() => {
                 bubbleEl.classList.add('show');
-            }, 80); // 微調快一點出現
+            }, 80); 
 
             hideDialogueTimeout = setTimeout(() => {
                 bubbleEl.classList.remove('show');
-            }, 2600); // 停留稍微久一點
+            }, 2600); 
         }
+
+        // 性格卡片點擊翻面
+        document.querySelectorAll('.trait-card').forEach(card => {
+            card.addEventListener('click', () => {
+                card.classList.toggle('flipped');
+            });
+        });
     </script>
 </body>
 </html>
-
-
