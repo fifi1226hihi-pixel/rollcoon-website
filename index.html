@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>洛睏的祕密檔案</title>
+    <title>洛睏的秘密檔案</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
@@ -38,29 +38,31 @@
             position: relative;
             box-shadow: 0 0 50px rgba(0,0,0,0.5);
             overflow: hidden;
-            padding-bottom: 80px;
+            
+            /* ★ 關鍵修正：底部留白加大到 120px，避免被固定跑馬燈擋住內容 */
+            padding-bottom: 120px;
         }
 
         /* =========================================
            2. 懸浮頁首 (Header)
            ========================================= */
-.rc-header {
-    position: fixed; 
-    top: 0; 
-    left: 0; 
-    width: 100vw; 
-    height: 60px;
-    background: #d6c8b3; 
-    border-bottom: 1px solid #c0b29e;
-    
-    /* ★ 修改這裡：原本是 2147483647，改成 1000 就好 */
-    z-index: 1000; 
-    
-    display: flex; 
-    align-items: center; 
-    justify-content: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
+        .rc-header {
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 60px;
+            background: #d6c8b3; 
+            border-bottom: 1px solid #c0b29e;
+            
+            /* 層級比封面低 (1000 < 99999) */
+            z-index: 1000; 
+            
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
         .rc-header-container {
             width: 100%; max-width: 1200px; padding: 0 15px;
             display: flex; align-items: center; justify-content: space-between;
@@ -88,11 +90,13 @@
            ========================================= */
         #landing-screen {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            /* 層級最高，蓋住 Header */
             z-index: 99999;
             background: linear-gradient(rgba(25, 67, 102, 0.9), rgba(25, 67, 102, 0.9)), url('bg.png');
             background-size: cover; background-position: center; background-repeat: no-repeat;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: opacity 0.8s ease, visibility 0.8s ease; cursor: pointer;
+            touch-action: none; /* 防止在封面滑動 */
         }
         #landing-screen.hidden { opacity: 0; pointer-events: none; visibility: hidden; }
         
@@ -103,17 +107,16 @@
         }
 
         /* =========================================
-           4. 主圖 (Character Wrapper) - ★ 修正發光問題 ★
+           4. 主圖 (Character Wrapper)
            ========================================= */
         .character-wrapper {
             width: 280px; height: 280px; margin: 40px auto 20px;
             position: relative; cursor: pointer; transition: transform 0.1s;
-            
-            /* ★ 關鍵修正：讓外層盒子也變圓，發光才會是圓的！ */
+            /* 讓外層盒子也變圓，發光才會是圓的 */
             border-radius: 50%; 
         }
         .character-wrapper:active { transform: scale(0.95); }
-        .charging { animation: charge 0.3s ease-out; } /* 發光動畫 */
+        .charging { animation: charge 0.3s ease-out; } 
 
         .img-container {
             width: 100%; height: 100%; border-radius: 50%;
@@ -132,7 +135,7 @@
         .dialogue-bubble.show { opacity: 1; transform: scale(1); top: -30px; }
 
         /* =========================================
-           5. 身分證 (ID Card) - ★ 修正手機跑版 ★
+           5. 身分證 (ID Card)
            ========================================= */
         .id-card {
             background-color: #fff1e6; color: #4a3b32;
@@ -147,82 +150,40 @@
         .id-photo-box {
             width: 120px; height: 160px;
             background: #fff; border: 1px solid #999;
-            flex-shrink: 0; /* ★ 關鍵：禁止手機版擠壓照片，保持固定大小 */
+            flex-shrink: 0; /* 禁止擠壓 */
             display: flex; align-items: center; justify-content: center; overflow: hidden;
         }
         .id-photo-box img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* ★ 手機版專用修正 (螢幕小於 480px 時) */
+        /* 手機版修正 */
         @media (max-width: 480px) {
             .id-card {
-                margin: 30px 20px; /* 縮小邊距，避免撐爆 */
-                padding: 20px;
-                transform: rotate(0deg); /* 手機版不旋轉，比較好閱讀 */
+                margin: 30px 20px; padding: 20px; transform: rotate(0deg);
             }
-            /* 如果想要手機版照片在上面，字在下面，可以把下面這行註解拿掉 */
-            /* .id-card-content { flex-direction: column; align-items: center; text-align: center; } */
         }
 
-        .stamp-fail {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-15deg);
-            border: 4px solid #991b1b; color: #991b1b; border-radius: 50%;
-            width: 100px; height: 100px; display: flex; align-items: center; justify-content: center;
-            font-size: 30px; font-weight: 900; opacity: 0.7; pointer-events: none; mix-blend-mode: multiply;
+        /* 大頭照區域設定 */
+        .avatar-box { 
+            position: relative; cursor: pointer; display: inline-block;
         }
-/* 1. 這是大頭照的「家」，氣泡必須黏著它 */
-.avatar-box { 
-    position: relative; /* ★ 關鍵：設定基準點，氣泡才不會亂跑 */
-    cursor: pointer; 
-    display: inline-block; /* 確保盒子大小跟內容一樣大 */
-}
 
-/* 2. 這是氣泡本人 */
-.angry-bubble {
-    /* 定位設定：黏在「家」的正上方 */
-    position: absolute; 
-    bottom: 105%; /* 距離頭頂一點點距離 (100%是剛好貼齊) */
-    left: 50%; 
-    transform: translateX(-50%); /* 確保是「正」中間 */
-    
-    /* 外觀設定 */
-    background: #d00000; 
-    color: #fff; 
-    padding: 6px 12px; 
-    border-radius: 12px;
-    font-size: 13px; 
-    font-weight: bold;
-    
-    /* ★ 關鍵：防止文字太長亂行，但又不讓它太寬 */
-    white-space: pre;   /* 不自動換行 (或者改成 nowrap) */
-    width: max-content; /* 寬度依文字長度自動調整 */
-    max-width: 200px;   /* 最大寬度限制 */
-    
-    /* 動畫設定 */
-    opacity: 0; 
-    transition: opacity 0.2s, bottom 0.2s; /* 加一點飄動效果 */
-    pointer-events: none;
-    z-index: 20; /* 確保蓋在所有東西上面 */
-}
+        /* 氣泡設定 */
+        .angry-bubble {
+            position: absolute; bottom: 105%; left: 50%; transform: translateX(-50%);
+            background: #d00000; color: #fff; padding: 6px 12px; border-radius: 12px;
+            font-size: 13px; font-weight: bold;
+            white-space: pre; width: max-content; max-width: 200px;
+            opacity: 0; transition: opacity 0.2s, bottom 0.2s; pointer-events: none;
+            z-index: 20;
+        }
+        .angry-bubble.show { opacity: 1; bottom: 115%; }
+        .angry-bubble::after {
+            content: ''; position: absolute; top: 100%; left: 50%; margin-left: -6px;
+            border-width: 6px; border-style: solid; border-color: #d00000 transparent transparent transparent;
+        }
 
-/* 氣泡出現時的狀態 */
-.angry-bubble.show { 
-    opacity: 1; 
-    bottom: 115%; /* 出現時稍微往上浮一點點 */
-}
-
-/* 加一個小箭頭指向下面，看起來更像對話框 */
-.angry-bubble::after {
-    content: '';
-    position: absolute;
-    top: 100%; /* 在氣泡下面 */
-    left: 50%;
-    margin-left: -6px;
-    border-width: 6px;
-    border-style: solid;
-    border-color: #d00000 transparent transparent transparent;
-}
         /* =========================================
-           6. 其他樣式 (滑塊、社群、頁尾)
+           6. 其他樣式 (滑塊、社群)
            ========================================= */
         .slider-container { display: flex; overflow-x: auto; gap: 15px; padding: 20px; scrollbar-width: none; }
         .slider-container::-webkit-scrollbar { display: none; }
@@ -246,18 +207,38 @@
         .social-btn .text { font-size: 22px; font-weight: 900; letter-spacing: 1px; }
         .social-btn small { display: block; font-size: 13px; opacity: 0.9; margin-top: 2px; }
 
-        .footer-bar { position: absolute; bottom: 0; left: 0; right: 0; background: #fbbf24; color: #4a3b32; padding: 10px 0; border-top: 4px solid #4a3b32; overflow: hidden;}
-        .marquee-content { display: inline-block; white-space: nowrap; animation: marquee 15s linear infinite; font-weight: bold; font-size: 14px; }
+        /* =========================================
+           7. 固定底部跑馬燈 (無縫循環版) ★ 新修正 ★
+           ========================================= */
+        .footer-bar { 
+            position: fixed; /* 固定在底部 */
+            bottom: 0; left: 0; width: 100%; z-index: 1000;
+            background: #fbbf24; color: #4a3b32; padding: 12px 0;
+            border-top: 4px solid #4a3b32; overflow: hidden; white-space: nowrap;
+        }
         
+        .marquee-track {
+            display: inline-flex; /* 讓兩份文字橫向排好 */
+            animation: scroll-continuous 20s linear infinite; /* 無縫捲動 */
+        }
+        
+        .marquee-content { 
+            padding-right: 50px; /* 文字間距 */
+            font-weight: bold; font-size: 14px; letter-spacing: 1px;
+        }
+
         .text-gold { color: #fbbf24; }
         .text-center { text-align: center; }
         .flex-center { display: flex; align-items: center; justify-content: center; }
         .relative { position: relative; }
         
+        /* 動畫區 */
         @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
         @keyframes charge { 0% { box-shadow: 0 0 0 rgba(251, 191, 36, 0); } 50% { box-shadow: 0 0 30px rgba(251, 191, 36, 0.8); } 100% { box-shadow: 0 0 0 rgba(251, 191, 36, 0); } }
-        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        
+        /* ★ 無縫捲動動畫：只需要移動 50% (因為我們複製了兩份) */
+        @keyframes scroll-continuous { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
     </style>
 </head>
 
@@ -313,13 +294,12 @@
 
             <section>
                 <div class="id-card">
-              
                     <h3 style="border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-bottom: 10px;">魔法協會臨時證</h3>
                     
                     <div class="id-card-content" style="display: flex; gap: 15px;">
                         
                         <div class="avatar-box" onclick="pokeAvatar()">
-                            <div id="angry-msg" class="angry-bubble">這裡不是大頭照!是我的施法英姿</div>
+                            <div id="angry-msg" class="angry-bubble">這裡不是大頭照!<br>是我的施法英姿</div>
                             <div class="id-photo-box">
                                 <img src="avatar.PNG" alt="大頭照" onerror="this.src='https://placehold.co/300x400/e2e8f0/1a1b3b?text=請放入+avatar.png'">
                             </div>
@@ -397,8 +377,13 @@
             </section>
             
             <footer class="footer-bar">
-                <div class="marquee-content">
-                    ⚠️ 嚴正聲明：浣熊肉不好吃！ &nbsp;&nbsp;&nbsp;&nbsp; 🏃 救命啊～不要追偶！ &nbsp;&nbsp;&nbsp;&nbsp; 🍲 禁止將本浣熊加入火鍋！ &nbsp;&nbsp;&nbsp;&nbsp; 🎲 徵求大量 D20 骰子 (要好吃的)
+                <div class="marquee-track">
+                    <div class="marquee-content">
+                        ⚠️ 嚴正聲明：浣熊肉不好吃！ &nbsp;&nbsp;&nbsp;&nbsp; 🏃 救命啊～不要追偶！ &nbsp;&nbsp;&nbsp;&nbsp; 🍲 禁止將本浣熊加入火鍋！ &nbsp;&nbsp;&nbsp;&nbsp; 🎲 徵求大量 D20 骰子 (要好吃的)
+                    </div>
+                    <div class="marquee-content">
+                        ⚠️ 嚴正聲明：浣熊肉不好吃！ &nbsp;&nbsp;&nbsp;&nbsp; 🏃 救命啊～不要追偶！ &nbsp;&nbsp;&nbsp;&nbsp; 🍲 禁止將本浣熊加入火鍋！ &nbsp;&nbsp;&nbsp;&nbsp; 🎲 徵求大量 D20 骰子 (要好吃的)
+                    </div>
                 </div>
             </footer>
         </main>
@@ -406,13 +391,13 @@
 
     <script>
         // 解鎖封面
- function unlockBook() {
-    // 1. 強制滾動到網頁最上方 (解決一進去在半山腰的問題)
-    window.scrollTo(0, 0);
-    
-    // 2. 隱藏封面
-    document.getElementById('landing-screen').classList.add('hidden');
-}
+        function unlockBook() {
+            // 強制滾動到網頁最上方
+            window.scrollTo(0, 0);
+            // 隱藏封面
+            document.getElementById('landing-screen').classList.add('hidden');
+        }
+
         // 大頭照戳戳樂
         function pokeAvatar() {
             const bubble = document.getElementById('angry-msg');
