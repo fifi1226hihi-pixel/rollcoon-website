@@ -44,12 +44,23 @@
         /* =========================================
            2. 懸浮頁首 (Header)
            ========================================= */
-        .rc-header {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 60px;
-            background: #d6c8b3; border-bottom: 1px solid #c0b29e;
-            z-index: 2147483647; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
+.rc-header {
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100vw; 
+    height: 60px;
+    background: #d6c8b3; 
+    border-bottom: 1px solid #c0b29e;
+    
+    /* ★ 修改這裡：原本是 2147483647，改成 1000 就好 */
+    z-index: 1000; 
+    
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
         .rc-header-container {
             width: 100%; max-width: 1200px; padding: 0 15px;
             display: flex; align-items: center; justify-content: space-between;
@@ -395,10 +406,13 @@
 
     <script>
         // 解鎖封面
-        function unlockBook() {
-            document.getElementById('landing-screen').classList.add('hidden');
-        }
-
+ function unlockBook() {
+    // 1. 強制滾動到網頁最上方 (解決一進去在半山腰的問題)
+    window.scrollTo(0, 0);
+    
+    // 2. 隱藏封面
+    document.getElementById('landing-screen').classList.add('hidden');
+}
         // 大頭照戳戳樂
         function pokeAvatar() {
             const bubble = document.getElementById('angry-msg');
