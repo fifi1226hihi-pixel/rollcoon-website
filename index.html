@@ -30,10 +30,11 @@
         #app-container {
             width: 100%;
             max-width: 480px;
-            /* 背景圖設定 */
+            /* ★ 改回來了！使用 bg.png */
             background-image: linear-gradient(rgba(15, 16, 37, 0.8), rgba(15, 16, 37, 0.8)), url('bg.png');
             background-size: cover;
             background-position: center;
+            background-attachment: fixed; /* 讓背景固定不動，更有質感 */
             min-height: 100vh;
             position: relative;
             box-shadow: 0 0 50px rgba(0,0,0,0.5);
@@ -74,7 +75,7 @@
         }
 
         /* =========================================
-           3. 封面與特效 (★ 修正圖片不見的問題 ★)
+           3. 封面與特效
            ========================================= */
         #landing-screen {
             position: fixed; 
@@ -83,8 +84,8 @@
             width: 100vw;
             z-index: 99999;
             
-        
-            background: linear-gradient(rgba(25, 67, 102, 0.6), rgba(25, 67, 102, 0.6)), url('bg.png');
+            /* ★ 改回來了！使用 bg.png，搭配比較好看的放射漸層 */
+            background: radial-gradient(circle at center, rgba(15, 16, 37, 0.5) 0%, rgba(15, 16, 37, 0.95) 100%), url('bg.png');
             
             background-size: cover; background-position: center; background-repeat: no-repeat;
             
@@ -98,7 +99,6 @@
             animation: float 3s ease-in-out infinite; border: 4px solid #4a3b32;
             border-radius: 12px; overflow: hidden; box-shadow: 0 0 30px rgba(251, 191, 36, 0.2);
             margin-bottom: 20px;
-            /* 讓中間的書本背景黑一點，凸顯封面 */
             background: #000; 
         }
 
@@ -130,10 +130,12 @@
         .dialogue-bubble.show { opacity: 1; transform: scale(1); top: -30px; }
 
         /* =========================================
-           5. 身分證 (ID Card) - 懸浮特效
+           5. 身分證 (ID Card) - 字體加粗 + 懸浮
            ========================================= */
         .id-card {
-            background-color: #fff1e6; color: #4a3b32;
+            background-color: #fff1e6; 
+            color: #2c1e12; 
+            font-weight: 700;
             padding: 30px; margin: 50px; 
             border-radius: 8px; 
             box-shadow: 5px 5px 15px rgba(0,0,0,0.3); position: relative;
@@ -142,6 +144,8 @@
             animation: float-card-desktop 4s ease-in-out infinite;
         }
         
+        .id-card strong { font-weight: 900; color: #000; }
+
         .id-photo-box {
             width: 120px; height: 160px;
             background: #fff; border: 1px solid #999;
@@ -174,12 +178,31 @@
         }
 
         /* =========================================
-           6. 其他樣式
+           6. 性格滑塊 (Trait Cards) - 3D立體 + 文字凸顯
            ========================================= */
-        .slider-container { display: flex; overflow-x: auto; gap: 15px; padding: 20px; scrollbar-width: none; }
+        .slider-container { 
+            display: flex; overflow-x: auto; gap: 20px; padding: 20px 20px 40px 20px; 
+            scrollbar-width: none; scroll-snap-type: x mandatory; 
+        }
         .slider-container::-webkit-scrollbar { display: none; }
-        .trait-card { flex: 0 0 260px; background: #fff; color: #333; border-radius: 20px; padding: 20px; text-align: center; }
         
+        .trait-card { 
+            flex: 0 0 260px; scroll-snap-align: center; background: #fff; color: #333; 
+            border-radius: 24px; padding: 25px 20px; text-align: center; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2), inset 0 -4px 0 rgba(0,0,0,0.1); 
+            border: 2px solid rgba(255,255,255,0.8);
+            transform: scale(0.98); transition: transform 0.3s;
+        }
+        
+        .trait-card h4 {
+            font-size: 20px; font-weight: 900; margin: 15px 0 10px 0;
+            text-shadow: 0 2px 0 rgba(255,255,255,0.5);
+        }
+        
+        .trait-card p {
+            font-size: 14px; font-weight: 700; line-height: 1.6; opacity: 0.9;
+        }
+
         .social-section { padding: 0 20px; margin-bottom: 40px; }
         .social-btn {
             display: flex; align-items: center; justify-content: center; width: 100%;
