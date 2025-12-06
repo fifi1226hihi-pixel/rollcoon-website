@@ -29,7 +29,7 @@
 
         #app-container {
             width: 100%;
-            max-width: 480px;             /* 手機版寬度 */
+            max-width: 480px;
             background-image: linear-gradient(rgba(15, 16, 37, 0.8), rgba(15, 16, 37, 0.8)), url('bg.png');
             background-size: cover;
             background-position: center;
@@ -96,13 +96,13 @@
             width: 220px;
             height: auto;
             image-rendering: auto;
-            /* 光暈縮小，避免手機邊緣被裁掉太明顯 */
-            filter: drop-shadow(0 0 14px rgba(251, 191, 36, 0.8));
+            /* 光暈稍微縮小，避免在手機邊緣太明顯被裁掉 */
+            filter: drop-shadow(0 0 18px rgba(251, 191, 36, 0.8));
             transition: transform 0.2s ease, filter 0.2s ease;
         }
         .book-container:active .unlock-folder {
             transform: scale(0.96);
-            filter: drop-shadow(0 0 22px rgba(251, 191, 36, 1));
+            filter: drop-shadow(0 0 26px rgba(251, 191, 36, 1));
         }
 
         /* =========================================
@@ -301,10 +301,6 @@
             font-size: 22px;
         }
 
-        .social-grid {
-            display: block;       /* 手機：直排 */
-        }
-
         .social-item {
             margin-bottom: 18px;
             text-align: center;
@@ -374,14 +370,14 @@
             position: absolute;
             bottom: 100%;          /* 貼齊按鈕上緣 */
             left: 50%;
-            transform: translate(-50%, 8px) scale(0.8);
+            transform: translate(-50%, 8px) scale(0.85);
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.25s ease, transform 0.25s ease;
             z-index: 2;
         }
         .social-mascot img {
-            width: 82px;           /* 再小一點 */
+            width: 90px;           /* 再小一點 */
             height: auto;
             display: block;
         }
@@ -393,7 +389,7 @@
             transform: translate(-50%, 0) scale(1);
         }
 
-        /* 四個按鍵不同角度的小洛睏 */
+        /* 四個按鍵不同角度的小洛睏（檔名完全照妳現在的） */
         .mascot-yt img { transform: rotate(-10deg); }
         .mascot-pt img { transform: rotate(6deg); }
         .mascot-line img { transform: rotate(-4deg); }
@@ -416,58 +412,7 @@
         .relative { position: relative; }
         
         /* =========================================
-           9. 桌機版排版（螢幕較寬時）
-           ========================================= */
-        @media (min-width: 900px) {
-            body {
-                padding-top: 90px !important;
-            }
-
-            #app-container {
-                max-width: 960px;          /* 桌機版寬一點 */
-                padding-bottom: 140px;
-            }
-
-            main {
-                padding: 30px 40px 120px;
-            }
-
-            /* 上半部：角色 + 身分證並排 */
-            .top-layout {
-                display: flex;
-                align-items: flex-start;
-                gap: 40px;
-            }
-
-            .hero-section {
-                flex: 1;
-            }
-
-            .id-section {
-                flex: 1;
-            }
-
-            .character-wrapper {
-                margin: 20px auto 10px;
-            }
-
-            .id-card {
-                margin: 20px 0 0;
-            }
-
-            /* 社群區：2 欄 grid */
-            .social-grid {
-                display: grid;
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 24px;
-            }
-            .social-item {
-                margin-bottom: 0;
-            }
-        }
-
-        /* =========================================
-           10. 動畫 Keyframes
+           9. 動畫 Keyframes
            ========================================= */
         @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
@@ -489,6 +434,82 @@
             0% { left: -100%; opacity: 0; }
             50% { opacity: 1; }
             100% { left: 200%; opacity: 0; }
+        }
+
+        /* =========================================
+           10. 桌機版排版（>=900px 才啟動）
+           ========================================= */
+        @media (min-width: 900px) {
+            body {
+                padding-top: 90px !important;
+            }
+
+            #app-container {
+                max-width: 960px;
+                margin: 20px auto 0;
+                padding-bottom: 140px;
+                border-radius: 18px;
+            }
+
+            main {
+                padding: 20px 30px 40px;
+                display: grid;
+                grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+                grid-auto-rows: auto;
+                grid-column-gap: 40px;
+                grid-row-gap: 24px;
+            }
+
+            /* 第一區（主角）＋ 第二區（身分證）變成左右並排 */
+            main > section:first-of-type {
+                grid-column: 1 / 2;
+                grid-row: 1;
+            }
+            main > section:nth-of-type(2) {
+                grid-column: 2 / 3;
+                grid-row: 1;
+                align-self: center;
+            }
+
+            /* 性格滑塊橫跨全寬 */
+            main > section:nth-of-type(3) {
+                grid-column: 1 / 3;
+            }
+
+            /* 社群區塊橫跨全寬 */
+            main > section.social-section {
+                grid-column: 1 / 3;
+            }
+
+            .character-wrapper {
+                margin: 10px auto 16px;
+            }
+
+            .id-card {
+                margin: 0;
+            }
+
+            /* 性格滑塊置中顯示，整排比較寬 */
+            .slider-container {
+                justify-content: center;
+            }
+
+            /* 社群按鈕桌機版改成兩欄 */
+            .social-section {
+                margin-top: 10px;
+                text-align: center;
+            }
+
+            .social-section h3 {
+                margin-bottom: 24px;
+            }
+
+            .social-item {
+                display: inline-block;
+                width: 48%;
+                margin: 0 1% 24px;
+                vertical-align: top;
+            }
         }
     </style>
 </head>
@@ -514,7 +535,7 @@
     <div id="landing-screen" class="flex-center" onclick="unlockBook()">
         <div class="book-container">
             <img src="cover.png" alt="檔案夾封面" class="unlock-folder"
-                 onerror="this.src='https://placehold.co/300x220/1a1b3b/fbbf24?text=請放入+cover.png'">
+                 onerror="this.src='https://placehold.co/300x220/1a1b3b/fbbf24?text=cover.png'">
         </div>
         <p class="text-gold" style="animation: pulse 2s infinite; margin-top: 18px;">點擊解開封印...</p>
         <h1 style="margin-top: 10px; font-size: 24px;">洛睏的祕密檔案</h1>
@@ -522,57 +543,54 @@
 
     <div id="app-container">
         <main>
-            <!-- 上半部：角色 + 身分證 -->
-            <div class="top-layout">
-                <section class="relative hero-section">
-                    <div class="character-wrapper" id="char-wrapper" onclick="pokeCharacter()">
-                        <div class="img-container" style="background: #ffffff;">
-                            <img id="main-img" src="main_1.png" alt="主圖" onerror="this.src='https://placehold.co/400x400/2d5a88/fbbf24?text=請放入+main_1.png'">
-                        </div>
-                        
-                        <div id="main-dialogue" class="dialogue-bubble">
-                            阿洛哈～ (呼嚕...)
-                        </div>
+            <section class="relative">
+                <div class="character-wrapper" id="char-wrapper" onclick="pokeCharacter()">
+                    <div class="img-container" style="background: #ffffff;">
+                        <img id="main-img" src="main_1.png" alt="主圖" onerror="this.src='https://placehold.co/400x400/2d5a88/fbbf24?text=main_1.png'">
                     </div>
-
-                    <div class="text-center">
-                        <h2 style="font-size: 28px; margin-bottom: 5px;">洛睏</h2>
-                        <p style="color: #94a3b8; font-size: 14px;">Rollcoon Team Mascot</p>
-                        <div style="margin-top: 10px; display: flex; gap: 5px; justify-content: center;">
-                            <span style="background: #3B4C60; font-size: 12px; padding: 2px 8px; border-radius: 10px;">🧥 萬年藍披風</span>
-                            <span style="background: #fbbf24; font-size: 12px; padding: 2px 8px; border-radius: 10px;">🥣南瓜湯愛好者</span>
-                        </div>
+                    
+                    <div id="main-dialogue" class="dialogue-bubble">
+                        阿洛哈～ (呼嚕...)
                     </div>
-                </section>
+                </div>
 
-                <section class="id-section">
-                    <div class="id-card">
-                        <div class="id-title">
-                            <span>魔</span><span>法</span><span>臨</span><span>時</span><span>證</span>
-                        </div>
-                        
-                        <div class="id-card-content" style="display: flex; gap: 15px;">
-                            <div class="avatar-box" onclick="pokeAvatar()">
-                                <div id="angry-msg" class="angry-bubble">這裡不是大頭照!<br>是我的施法英姿</div>
-                                <div class="id-photo-box">
-                                    <img src="avatar.PNG" alt="大頭照" onerror="this.src='https://placehold.co/300x400/e2e8f0/1a1b3b?text=請放入+avatar.png'">
-                                </div>
-                            </div>
-                            
-                            <div style="flex: 1; font-size: 14px; line-height: 1.6; min-width: 0;">
-                                <div><strong>姓名：</strong> 洛睏</div>
-                                <div><strong>生日：</strong> 114/09/05</div>
-                                <div><strong>種族：</strong> 浣熊</div>
-                                <div><strong>職業：</strong> 見習法師</div>
-                                <div><strong>特徵：</strong> 右邊虎牙缺牙</div>
-                                <div><strong>必殺技：</strong> 躲在隊友後面</div>
-                                <div style="margin-top: 5px; font-size: 12px; color: #666;">ID: ROLLCOON-001</div>
+                <div class="text-center">
+                    <h2 style="font-size: 28px; margin-bottom: 5px;">洛睏</h2>
+                    <p style="color: #94a3b8; font-size: 14px;">Rollcoon Team Mascot</p>
+                    <div style="margin-top: 10px; display: flex; gap: 5px; justify-content: center;">
+                        <span style="background: #3B4C60; font-size: 12px; padding: 2px 8px; border-radius: 10px;">🧥 萬年藍披風</span>
+                        <span style="background: #fbbf24; font-size: 12px; padding: 2px 8px; border-radius: 10px;">🥣南瓜湯愛好者</span>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <div class="id-card">
+                    <div class="id-title">
+                        <span>魔</span><span>法</span><span>臨</span><span>時</span><span>證</span>
+                    </div>
+                    
+                    <div class="id-card-content" style="display: flex; gap: 15px;">
+                        <div class="avatar-box" onclick="pokeAvatar()">
+                            <div id="angry-msg" class="angry-bubble">這裡不是大頭照!<br>是我的施法英姿</div>
+                            <div class="id-photo-box">
+                                <img src="avatar.PNG" alt="大頭照" onerror="this.src='https://placehold.co/300x400/e2e8f0/1a1b3b?text=avatar.PNG'">
                             </div>
                         </div>
+                        
+                        <div style="flex: 1; font-size: 14px; line-height: 1.6; min-width: 0;">
+                            <div><strong>姓名：</strong> 洛睏</div>
+                            <div><strong>生日：</strong> 114/09/05</div>
+                            <div><strong>種族：</strong> 浣熊</div>
+                            <div><strong>職業：</strong> 見習法師</div>
+                            <div><strong>特徵：</strong> 右邊虎牙缺牙</div>
+                            <div><strong>必殺技：</strong> 躲在隊友後面</div>
+                            <div style="margin-top: 5px; font-size: 12px; color: #666;">ID: ROLLCOON-001</div>
+                        </div>
                     </div>
-                    <p class="text-center" style="font-size: 14px; opacity: 0.4;">( 試著戳戳看大頭照? )</p>
-                </section>
-            </div>
+                </div>
+                <p class="text-center" style="font-size: 14px; opacity: 0.4;">( 試著戳戳看大頭照? )</p>
+            </section>
 
             <!-- 性格滑塊：水晶質感版 -->
             <section>
@@ -600,50 +618,48 @@
             <section class="social-section">
                 <h3 class="text-center text-gold">✦ 加入偶們ㄉ冒險 ✦</h3>
                 
-                <div class="social-grid">
-                    <div class="social-item">
-                        <a href="https://www.youtube.com/channel/UCVpsXfqJrEif05VE8WEtnoA" target="_blank" class="social-btn btn-yt">
-                            <span class="icon"></span>
-                            <span class="text">TRPG 娛樂實境節目 | YouTube</span>
-                        </a>
-                        <div class="social-mascot mascot-yt">
-                            <img src="yt.png" alt="YT 小洛睏" onerror="this.src='https://placehold.co/80x80/1e293b/fbbf24?text=yt.png'">
-                        </div>
-                        <p class="social-desc">來跟偶和人類們一起玩TRPG!</p>
+                <div class="social-item">
+                    <a href="https://www.youtube.com/channel/UCVpsXfqJrEif05VE8WEtnoA" target="_blank" class="social-btn btn-yt">
+                        <span class="icon"></span>
+                        <span class="text">TRPG 娛樂實境節目 | YouTube</span>
+                    </a>
+                    <div class="social-mascot mascot-yt">
+                        <img src="yt.PNG" alt="YT 小洛睏" onerror="this.src='https://placehold.co/80x80/1e293b/fbbf24?text=yt.PNG'">
                     </div>
+                    <p class="social-desc">來跟偶和人類們一起玩TRPG!</p>
+                </div>
 
-                    <div class="social-item">
-                        <a href="https://www.patreon.com/cw/Rollcoon" target="_blank" class="social-btn btn-patreon">
-                            <span class="icon"></span>
-                            <span class="text">完整內容 會員獨家福利 | Patreon</span>
-                        </a>
-                        <div class="social-mascot mascot-pt">
-                            <img src="pt.png" alt="Patreon 小洛睏" onerror="this.src='https://placehold.co/80x80/1e293b/fbbf24?text=pt.png'">
-                        </div>
-                        <p class="social-desc">餵食偶!偶好餓!偶需要你!</p>
+                <div class="social-item">
+                    <a href="https://www.patreon.com/cw/Rollcoon" target="_blank" class="social-btn btn-patreon">
+                        <span class="icon"></span>
+                        <span class="text">完整內容 會員獨家福利 | Patreon</span>
+                    </a>
+                    <div class="social-mascot mascot-pt">
+                        <img src="pt.PNG" alt="Patreon 小洛睏" onerror="this.src='https://placehold.co/80x80/1e293b/fbbf24?text=pt.PNG'">
                     </div>
+                    <p class="social-desc">餵食偶!偶好餓!偶需要你!</p>
+                </div>
 
-                    <div class="social-item">
-                        <a href="https://line.me/ti/g2/AMRMIAnb0wleWffwaRYGGvRBaerwG1w24inkvQ?utm_source=invitation&utm_medium=link_copy&utm_campaign=default" target="_blank" class="social-btn btn-line">
-                            <span class="icon"></span>
-                            <span class="text">洛睏的魔法教室 | Line 社群</span>
-                        </a>
-                        <div class="social-mascot mascot-line">
-                            <img src="line.png" alt="Line 小洛睏" onerror="this.src='https://placehold.co/80x80/1e293b/fbbf24?text=line.png'">
-                        </div>
-                        <p class="social-desc">來找偶還有跟大家一起玩!</p>
+                <div class="social-item">
+                    <a href="https://line.me/ti/g2/AMRMIAnb0wleWffwaRYGGvRBaerwG1w24inkvQ?utm_source=invitation&utm_medium=link_copy&utm_campaign=default" target="_blank" class="social-btn btn-line">
+                        <span class="icon"></span>
+                        <span class="text">洛睏的魔法教室 | Line 社群</span>
+                    </a>
+                    <div class="social-mascot mascot-line">
+                        <img src="LINE.PNG" alt="Line 小洛睏" onerror="this.src='https://placehold.co/80x80/1e293b/fbbf24?text=LINE.PNG'">
                     </div>
-                    
-                    <div class="social-item">
-                        <a href="https://www.instagram.com/rollcoon_?igsh=MWtmcnVhbXJpanl5OQ%3D%3D&utm_source=qr" target="_blank" class="social-btn btn-ig">
-                            <span class="icon"></span>
-                            <span class="text">重要通知 日常分享 | Instagram</span>
-                        </a>
-                        <div class="social-mascot mascot-ig">
-                            <img src="ig.png" alt="IG 小洛睏" onerror="this.src='https://placehold.co/80x80/1e293b/fbbf24?text=ig.png'">
-                        </div>
-                        <p class="social-desc">看看偶和人類們ㄉ日常</p>
+                    <p class="social-desc">來找偶還有跟大家一起玩!</p>
+                </div>
+                
+                <div class="social-item">
+                    <a href="https://www.instagram.com/rollcoon_?igsh=MWtmcnVhbXJpanl5OQ%3D%3D&utm_source=qr" target="_blank" class="social-btn btn-ig">
+                        <span class="icon"></span>
+                        <span class="text">重要通知 日常分享  |Instagram</span>
+                    </a>
+                    <div class="social-mascot mascot-ig">
+                        <img src="ig.PNG" alt="IG 小洛睏" onerror="this.src='https://placehold.co/80x80/1e293b/fbbf24?text=ig.PNG'">
                     </div>
+                    <p class="social-desc">看看偶和人類們ㄉ日常</p>
                 </div>
             </section>
             
