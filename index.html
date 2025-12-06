@@ -105,6 +105,11 @@
             filter: drop-shadow(0 0 26px rgba(251, 191, 36, 1));
         }
 
+        /* 進入主畫面的「檔案打開」動畫 */
+        #app-container.app-opening {
+            animation: appOpen 0.6s ease-out;
+        }
+
         /* =========================================
            4. 主圖 (Character Wrapper)
            ========================================= */
@@ -227,12 +232,11 @@
             scroll-snap-align: center; 
             color: #f9fafb;
             border-radius: 22px;
-            padding: 0;              /* 改成由內層控制 padding，避免大小亂變 */
+            padding: 0;
             text-align: center;
             position: relative; 
             overflow: hidden;
 
-            /* 水晶質感：磨砂玻璃 + 內發光 */
             background: radial-gradient(circle at top left, rgba(255,255,255,0.18), rgba(15,23,42,0.85));
             border: 1px solid rgba(255,255,255,0.65);
             box-shadow:
@@ -245,10 +249,10 @@
             transform: scale(0.98);
             transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
             
-            height: 230px;          /* 固定高度，翻面時不會縮小 */
-            perspective: 1000px;    /* 給內層 3D 翻轉用 */
+            height: 230px;
+            perspective: 1000px;
         }
-        /* 反光層只在卡片裡面，不再超出邊界 */
+
         .trait-card::before {
             content:"";
             position:absolute;
@@ -269,7 +273,6 @@
             border-color: rgba(255,255,255,0.85);
         }
         
-        /* 翻面內層，只轉裡面內容 */
         .trait-inner {
             position: relative;
             width: 100%;
@@ -291,15 +294,11 @@
             justify-content: center;
             backface-visibility: hidden;
         }
-        .trait-front {
-            /* 正面維持原本排版 */
-        }
         .trait-back {
             transform: rotateY(180deg);
-            padding: 10px; /* 讓圖片不要貼到邊界，保留一圈水晶框 */
+            padding: 10px;
         }
 
-        /* 色調微差：只當色彩點綴 */
         .card-magic { border-color: rgba(129,140,248,0.8); }
         .card-idiot { border-color: rgba(251,146,60,0.9); }
         .card-coward { border-color: rgba(96,165,250,0.9); }
@@ -324,7 +323,6 @@
             text-shadow: 0 1px 2px rgba(0,0,0,0.7);
         }
 
-        /* 背面圖片滿版 + 一點水晶感 */
         .trait-back img {
             width: 100%;
             height: 100%;
@@ -350,7 +348,7 @@
         .social-item {
             margin-bottom: 18px;
             text-align: center;
-            position: relative;   /* 給小洛睏定位用 */
+            position: relative;
         }
 
         .social-btn {
@@ -360,7 +358,7 @@
             gap: 10px;
 
             padding: 10px 20px;
-            border-radius: 999px;           /* 膠囊狀 */
+            border-radius: 999px;
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
 
@@ -403,7 +401,6 @@
             filter: brightness(1.08); 
         }
 
-        /* 解說文字獨立在按鈕下面 */
         .social-desc {
             margin-top: 6px;
             font-size: 18px;
@@ -411,10 +408,9 @@
             opacity: 0.9;
         }
 
-        /* 小洛睏浮出效果 */
         .social-mascot {
             position: absolute;
-            bottom: 100%;          /* 貼齊按鈕上緣 */
+            bottom: 100%;
             left: 50%;
             transform: translate(-50%, 8px) scale(0.85);
             opacity: 0;
@@ -428,14 +424,12 @@
             display: block;
         }
 
-        /* hover / focus 時浮出 */
         .social-item:hover .social-mascot,
         .social-item:focus-within .social-mascot {
             opacity: 1;
             transform: translate(-50%, 0) scale(1);
         }
 
-        /* 四個按鍵不同角度的小洛睏 */
         .mascot-yt img { transform: rotate(-10deg); }
         .mascot-pt img { transform: rotate(6deg); }
         .mascot-line img { transform: rotate(-4deg); }
@@ -482,6 +476,12 @@
             100% { left: 200%; opacity: 0; }
         }
 
+        /* 開檔案放大動畫 */
+        @keyframes appOpen {
+            0%   { transform: scale(0.9); filter: blur(6px) brightness(0.7); opacity: 0; }
+            100% { transform: scale(1);   filter: blur(0) brightness(1);   opacity: 1; }
+        }
+
         /* =========================================
            10. 桌機版排版（>=900px 才啟動）
            ========================================= */
@@ -506,7 +506,6 @@
                 grid-row-gap: 24px;
             }
 
-            /* 第一區（主角）＋ 第二區（身分證）變成左右並排 */
             main > section:first-of-type {
                 grid-column: 1 / 2;
                 grid-row: 1;
@@ -517,12 +516,10 @@
                 align-self: center;
             }
 
-            /* 性格滑塊橫跨全寬 */
             main > section:nth-of-type(3) {
                 grid-column: 1 / 3;
             }
 
-            /* 社群區塊橫跨全寬 */
             main > section.social-section {
                 grid-column: 1 / 3;
             }
@@ -640,7 +637,6 @@
             <section>
                 <h3 class="text-center text-gold" style="margin-top: 20px;">天才還是白痴?</h3>
                 <div class="slider-container">
-                    <!-- 卡片 1：魔法天才 -->
                     <div class="trait-card card-magic" data-card="t1">
                         <div class="trait-inner">
                             <div class="trait-face trait-front">
@@ -654,7 +650,6 @@
                         </div>
                     </div>
 
-                    <!-- 卡片 2：生活白痴 -->
                     <div class="trait-card card-idiot" data-card="t2">
                         <div class="trait-inner">
                             <div class="trait-face trait-front">
@@ -668,7 +663,6 @@
                         </div>
                     </div>
 
-                    <!-- 卡片 3：膽小鬼 -->
                     <div class="trait-card card-coward" data-card="t3">
                         <div class="trait-inner">
                             <div class="trait-face trait-front">
@@ -684,7 +678,7 @@
                 </div>
             </section>
 
-            <!-- 社群連結：名稱在按鈕上，解說在下面 + 小洛睏 -->
+            <!-- 社群連結 -->
             <section class="social-section">
                 <h3 class="text-center text-gold">✦ 加入偶們ㄉ冒險 ✦</h3>
                 
@@ -746,12 +740,87 @@
         </main>
     </div>
 
+    <!-- 音效 / BGM：請準備 intro.wav、open.wav、main.wav -->
+    <audio id="bg-intro" src="intro.wav" loop preload="auto"></audio>
+    <audio id="sfx-open" src="open.wav" preload="auto"></audio>
+    <audio id="bg-main" src="main.wav" loop preload="auto"></audio>
+
     <script>
+        // ===== 音效與 BGM 控制 =====
+        let introBgm, mainBgm, openSfx;
+        let introStarted = false;
+        let alreadyOpened = false;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            introBgm = document.getElementById('bg-intro');
+            mainBgm  = document.getElementById('bg-main');
+            openSfx  = document.getElementById('sfx-open');
+
+            // 第一次點畫面 → 啟動檔案夾畫面 BGM
+            const firstInteract = () => {
+                if (!introStarted && introBgm) {
+                    introStarted = true;
+                    introBgm.volume = 0.6;
+                    introBgm.play().catch(() => {});
+                }
+                document.removeEventListener('pointerdown', firstInteract);
+            };
+            document.addEventListener('pointerdown', firstInteract);
+        });
+
         function unlockBook() {
+            if (alreadyOpened) return;
+            alreadyOpened = true;
+
             window.scrollTo(0, 0);
-            document.getElementById('landing-screen').classList.add('hidden');
+            const landing = document.getElementById('landing-screen');
+            const app     = document.getElementById('app-container');
+
+            // 檔案打開音效
+            if (openSfx) {
+                openSfx.currentTime = 0;
+                openSfx.play().catch(() => {});
+            }
+
+            // 檔案打開動畫
+            if (app) {
+                app.classList.add('app-opening');
+                setTimeout(() => app.classList.remove('app-opening'), 700);
+            }
+
+            // BGM 交接：intro -> main，用小漸大
+            if (introBgm && mainBgm) {
+                if (!introStarted) {
+                    introStarted = true;
+                    introBgm.volume = 0.6;
+                    introBgm.play().catch(() => {});
+                }
+
+                mainBgm.volume = 0;
+                mainBgm.play().catch(() => {});
+
+                let step = 0;
+                const steps = 15;
+                const fadeTimer = setInterval(() => {
+                    step++;
+                    const t = step / steps;
+                    introBgm.volume = 0.6 * (1 - t);
+                    mainBgm .volume = 0.8 * t;
+                    if (step >= steps) {
+                        clearInterval(fadeTimer);
+                        introBgm.pause();
+                        introBgm.currentTime = 0;
+                        mainBgm.volume = 0.8;
+                    }
+                }, 80);
+            }
+
+            if (landing) {
+                landing.classList.add('hidden');
+            }
         }
 
+        // ===== 其它互動：大頭貼、主角對話、性格卡片翻面 =====
         function pokeAvatar() {
             const bubble = document.getElementById('angry-msg');
             bubble.classList.add('show');
@@ -779,27 +848,24 @@
             const bubbleEl = document.getElementById('main-dialogue');
             const wrapperEl = document.getElementById('char-wrapper');
 
-            // 動畫重置
             wrapperEl.classList.remove('charging');
             void wrapperEl.offsetWidth; 
             wrapperEl.classList.add('charging');
 
-            // 換圖、換台詞
             imgEl.src = nextState.img;
             bubbleEl.innerHTML = nextState.text;
 
-            // 清掉舊的計時器，避免延遲跟錯
             if (showDialogueTimeout) clearTimeout(showDialogueTimeout);
             if (hideDialogueTimeout) clearTimeout(hideDialogueTimeout);
 
             bubbleEl.classList.remove('show');
             showDialogueTimeout = setTimeout(() => {
                 bubbleEl.classList.add('show');
-            }, 80); 
+            }, 80);
 
             hideDialogueTimeout = setTimeout(() => {
                 bubbleEl.classList.remove('show');
-            }, 2600); 
+            }, 2600);
         }
 
         // 性格卡片點擊翻面
